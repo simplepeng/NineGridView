@@ -2,11 +2,13 @@ package demo.simple.ninegridview
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import demo.simple.ninegridview.databinding.ActivityMainBinding
+import me.simple.view.NineGridView
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,22 +23,33 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    class Adapter : RecyclerView.Adapter<VH>() {
+    class Adapter : NineGridView.Adapter() {
 
         override fun getItemCount(): Int {
-            return 5
+            return 10
         }
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-            val itemView =
-                LayoutInflater.from(parent.context).inflate(R.layout.item_image, parent, false)
-            return VH(itemView)
+        override fun onCreateItemView(parent: ViewGroup, viewType: Int): View {
+            return LayoutInflater.from(parent.context).inflate(R.layout.item_image, parent, false)
         }
 
-        override fun onBindViewHolder(holder: VH, position: Int) {
+        override fun onBindItemView(itemView: View, position: Int) {
         }
 
+        //
+
+        override fun adaptSingleView() = true
+
+        override fun onCreateSingleView(parent: ViewGroup, viewType: Int): View? {
+            return LayoutInflater.from(parent.context).inflate(R.layout.item_single, parent, false)
+        }
+
+        //
+
+        override fun enableExtraView() = true
+
+        override fun onCreateExtraView(parent: ViewGroup, viewType: Int): View? {
+            return LayoutInflater.from(parent.context).inflate(R.layout.item_extra, parent, false)
+        }
     }
-
-    class VH(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
