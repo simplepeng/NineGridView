@@ -1,2 +1,3 @@
 rootProject.name = "NineGridView"
 include ':app'
+include ':nine_grid_view'
