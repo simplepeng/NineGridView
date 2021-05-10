@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     class Adapter : NineGridView.Adapter() {
 
         override fun getItemCount(): Int {
-            return 10
+            return 1
         }
 
         override fun onCreateItemView(parent: ViewGroup, viewType: Int): View {
@@ -44,12 +44,22 @@ class MainActivity : AppCompatActivity() {
             return LayoutInflater.from(parent.context).inflate(R.layout.item_single, parent, false)
         }
 
+        override fun onBindSingleView(singleView: View, position: Int) {
+            super.onBindSingleView(singleView, position)
+
+        }
+
         //
 
         override fun enableExtraView() = true
 
         override fun onCreateExtraView(parent: ViewGroup, viewType: Int): View? {
             return LayoutInflater.from(parent.context).inflate(R.layout.item_extra, parent, false)
+        }
+
+        override fun onBindExtraView(extraView: View, position: Int) {
+            super.onBindExtraView(extraView, position)
+
         }
     }
 }

@@ -55,7 +55,9 @@ class NineGridView @JvmOverloads constructor(
         //
         if (adapter.adaptSingleView() && adapter.getItemCount() == 1) {
             measureChildren(widthMeasureSpec, heightMeasureSpec)
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+            val adaptHeightMeasureSpec =
+                MeasureSpec.makeMeasureSpec(getChildAt(0).measuredHeight, MeasureSpec.EXACTLY)
+            super.onMeasure(widthMeasureSpec, adaptHeightMeasureSpec)
             return
         }
 
@@ -200,7 +202,7 @@ class NineGridView @JvmOverloads constructor(
 
         open fun onCreateSingleView(parent: ViewGroup, viewType: Int): View? = null
 
-        open fun onBindSingleView(itemView: View, position: Int) {
+        open fun onBindSingleView(singleView: View, position: Int) {
 
         }
 
@@ -210,7 +212,7 @@ class NineGridView @JvmOverloads constructor(
 
         open fun onCreateExtraView(parent: ViewGroup, viewType: Int): View? = null
 
-        open fun onBindExtraView(itemView: View, position: Int) {
+        open fun onBindExtraView(extraView: View, position: Int) {
 
         }
     }
