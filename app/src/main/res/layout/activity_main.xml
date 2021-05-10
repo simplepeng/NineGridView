@@ -6,13 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <me.simple.view.NineGridView
-        android:id="@+id/nineGridView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvWxCircle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/holo_green_light"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

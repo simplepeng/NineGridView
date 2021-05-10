@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import com.bumptech.glide.Glide
 
 open class ImageAdapter(
@@ -20,5 +21,16 @@ open class ImageAdapter(
         Glide.with(itemView)
             .load(images[position])
             .into(itemView as ImageView)
+    }
+
+    override fun enableExtraView() = true
+
+    override fun onCreateExtraView(parent: ViewGroup, viewType: Int): View? {
+        return LayoutInflater.from(parent.context).inflate(R.layout.layout_ngv_extra, parent, false)
+    }
+
+    override fun onBindExtraView(extraView: View, position: Int) {
+        val tvExtra = extraView.findViewById<TextView>(R.id.tvExtra)
+        tvExtra.text = String.format("+%s", images.size - position)
     }
 }
