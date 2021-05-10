@@ -109,7 +109,8 @@ open class NineGridView @JvmOverloads constructor(
                 adapter.onBindItemView(child, i)
             }
 
-            if ((i + 1) % spanCount == 0) {//
+            val skipPosition = if (adapter.adaptFourItem() && displayCount == 4) 2 else spanCount
+            if ((i + 1) % skipPosition == 0) {//
                 left = 0
                 top = bottom + childMargin
             } else {
@@ -198,6 +199,10 @@ open class NineGridView @JvmOverloads constructor(
         fun getItemViewType(position: Int): Int {
             return 0
         }
+
+        //-------适配4个itemView那种情况
+
+        open fun adaptFourItem(): Boolean = false
 
         //-------默认的ItemView
 

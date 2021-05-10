@@ -90,6 +90,7 @@ class MainActivity : AppCompatActivity() {
         val images = mutableListOf<String>()
         val randomCount = Random().nextInt(mImages.size)
 //        val randomCount = 9
+//        val randomCount = 4
         for (i in 0 until randomCount) {
             val index = Random().nextInt(mImages.size)
             images.add(mImages[index])
@@ -139,6 +140,8 @@ class MainActivity : AppCompatActivity() {
         override fun getItemCount(): Int {
             return items.size
         }
+
+        override fun adaptFourItem() = true
 
         override fun onCreateItemView(parent: ViewGroup, viewType: Int): View {
             return LayoutInflater.from(parent.context).inflate(R.layout.item_image, parent, false)
