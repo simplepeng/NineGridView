@@ -91,7 +91,9 @@ open class NineGridView @JvmOverloads constructor(
         if (adapter.adaptSingleView() && childCount == 1) {
             val singleView = getChildAt(0)
             singleView.layout(0, 0, singleView.measuredWidth, measuredHeight)
-            adapter.onBindSingleView(singleView, 0)
+            singleView.post {
+                adapter.onBindSingleView(singleView, 0)
+            }
             return
         }
 
@@ -103,7 +105,9 @@ open class NineGridView @JvmOverloads constructor(
             bottom = top + child.measuredWidth
 
             child.layout(left, top, right, bottom)
-            adapter.onBindItemView(child, i)
+            child.post {
+                adapter.onBindItemView(child, i)
+            }
 
             if ((i + 1) % spanCount == 0) {//
                 left = 0
@@ -121,7 +125,9 @@ open class NineGridView @JvmOverloads constructor(
             bottom = height
             top = bottom - extraView.measuredWidth
             extraView.layout(left, top, right, bottom)
-            adapter.onBindExtraView(extraView, childCount - 1)
+            extraView.post {
+                adapter.onBindExtraView(extraView, childCount - 1)
+            }
         }
 
     }

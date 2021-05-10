@@ -5,8 +5,10 @@
     android:layout_height="wrap_content">
 
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="300dp"
         android:layout_height="300dp"
+        android:scaleType="centerCrop"
         android:background="@android:color/holo_red_light"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

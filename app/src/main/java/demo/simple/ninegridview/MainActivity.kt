@@ -2,11 +2,13 @@ package demo.simple.ninegridview
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -87,8 +89,9 @@ class MainActivity : AppCompatActivity() {
     private fun createImages(): List<String> {
         val images = mutableListOf<String>()
         val randomCount = Random().nextInt(mImages.size)
+//        val randomCount = 9
         for (i in 0 until randomCount) {
-            val index = Random().nextInt(randomCount)
+            val index = Random().nextInt(mImages.size)
             images.add(mImages[index])
         }
         return images
@@ -129,7 +132,7 @@ class MainActivity : AppCompatActivity() {
         val nineGridView = itemView.findViewById<NineGridView>(R.id.nineGridView)
     }
 
-    class Adapter(
+    inner class Adapter(
         private val items: List<String>
     ) : NineGridView.Adapter() {
 
@@ -146,18 +149,27 @@ class MainActivity : AppCompatActivity() {
             Glide.with(itemView)
                 .load(items[position])
                 .into(imageView)
+            itemView.setOnClickListener {
+                toast("itemView click")
+            }
         }
 
         //
 
-        override fun adaptSingleView() = false
+        override fun adaptSingleView() = true
 
         override fun onCreateSingleView(parent: ViewGroup, viewType: Int): View? {
             return LayoutInflater.from(parent.context).inflate(R.layout.item_single, parent, false)
         }
 
         override fun onBindSingleView(singleView: View, position: Int) {
-
+            val imageView = singleView.findViewById<ImageView>(R.id.imageView)
+            Glide.with(singleView)
+                .load(items[position])
+                .into(imageView)
+            singleView.setOnClickListener {
+                toast("singleView click")
+            }
         }
 
         //
@@ -170,7 +182,15 @@ class MainActivity : AppCompatActivity() {
 
         override fun onBindExtraView(extraView: View, position: Int) {
             val tvExtra = extraView.findViewById<TextView>(R.id.tvExtra)
-            tvExtra.text = String.format("+%s", items.size - position)
+            val extraCount = items.size - position
+            tvExtra.text = String.format("+%s", extraCount)
+            extraView.setOnClickListener {
+                toast("ExtraView click")
+            }
         }
+    }
+
+    fun toast(text: String) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
 }
