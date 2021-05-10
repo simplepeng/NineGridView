@@ -1,7 +1,9 @@
 package me.simple.view
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import kotlin.math.ceil
@@ -24,6 +26,25 @@ class NineGridView @JvmOverloads constructor(
             addViews()
         }
 
+    fun dp2px(value: Float): Float {
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            value,
+            resources.displayMetrics
+        )
+    }
+
+    init {
+        if (attrs != null) {
+            val typedArray = context.obtainStyledAttributes(attrs, R.styleable.NineGridView)
+            spanCount = typedArray.getInt(R.styleable.NineGridView_spanCount, spanCount)
+            maxCount = typedArray.getInt(R.styleable.NineGridView_maxCount, maxCount)
+            childMargin =
+                typedArray.getDimension(R.styleable.NineGridView_childMargin, dp2px(1f)).toInt()
+            typedArray.recycle()
+        }
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         if (adapter == null) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -43,7 +64,8 @@ class NineGridView @JvmOverloads constructor(
         val width = MeasureSpec.getSize(widthMeasureSpec)
         val height = width / spanCount * lineCount
 
-        val childMeasureSpec = MeasureSpec.makeMeasureSpec(width / spanCount, MeasureSpec.EXACTLY)
+        val itemWidth = (width - (childMargin * (spanCount - 1))) / spanCount
+        val childMeasureSpec = MeasureSpec.makeMeasureSpec(itemWidth, MeasureSpec.EXACTLY)
         measureChildren(childMeasureSpec, childMeasureSpec)
 
         setMeasuredDimension(width, height)
@@ -55,7 +77,6 @@ class NineGridView @JvmOverloads constructor(
     }
 
     private fun layoutChildren() {
-        val itemWidth = width / spanCount
 
         var left = 0
         var top = 0
@@ -75,16 +96,16 @@ class NineGridView @JvmOverloads constructor(
         val displayCount = getDisplayCount()
         for (i in 0 until displayCount) {
             val child = getChildAt(i)
-            right = left + itemWidth
-            bottom = top + itemWidth
+            right = left + child.measuredWidth
+            bottom = top + child.measuredWidth
 
             child.layout(left, top, right, bottom)
 
             if ((i + 1) % spanCount == 0) {//
                 left = 0
-                top = bottom
+                top = bottom + childMargin
             } else {
-                left = right
+                left = right + childMargin
             }
         }
 
@@ -92,9 +113,9 @@ class NineGridView @JvmOverloads constructor(
         if (adapter.enableExtraView() && adapter.getItemCount() > maxCount) {
             val extraView = getChildAt(childCount - 1)
             right = width
-            left = right - itemWidth
+            left = right - extraView.measuredWidth
             bottom = height
-            top = bottom - itemWidth
+            top = bottom - extraView.measuredWidth
             extraView.layout(left, top, right, bottom)
         }
 

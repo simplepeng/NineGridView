@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="NineGridView">
+        <attr name="spanCount" format="integer" />
+        <attr name="childMargin" format="integer|dimension" />
+        <attr name="maxCount" format="integer" />
+    </declare-styleable>
+</resources>
