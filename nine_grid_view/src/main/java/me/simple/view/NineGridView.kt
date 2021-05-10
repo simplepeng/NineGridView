@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlin.math.ceil
 
-class NineGridView @JvmOverloads constructor(
+open class NineGridView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -26,7 +26,7 @@ class NineGridView @JvmOverloads constructor(
             addViews()
         }
 
-    fun dp2px(value: Float): Float {
+    open fun dp2px(value: Float): Float {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             value,
@@ -91,6 +91,7 @@ class NineGridView @JvmOverloads constructor(
         if (adapter.adaptSingleView() && childCount == 1) {
             val singleView = getChildAt(0)
             singleView.layout(0, 0, singleView.measuredWidth, measuredHeight)
+            adapter.onBindSingleView(singleView, 0)
             return
         }
 
@@ -102,6 +103,7 @@ class NineGridView @JvmOverloads constructor(
             bottom = top + child.measuredWidth
 
             child.layout(left, top, right, bottom)
+            adapter.onBindItemView(child, i)
 
             if ((i + 1) % spanCount == 0) {//
                 left = 0
@@ -119,6 +121,7 @@ class NineGridView @JvmOverloads constructor(
             bottom = height
             top = bottom - extraView.measuredWidth
             extraView.layout(left, top, right, bottom)
+            adapter.onBindExtraView(extraView, childCount - 1)
         }
 
     }
