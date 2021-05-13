@@ -47,7 +47,7 @@ open class NineGridView @JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         if (adapter == null || adapter!!.getItemCount() == 0) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+            super.onMeasure(widthMeasureSpec, 0)
             return
         }
 
