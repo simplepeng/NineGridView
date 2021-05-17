@@ -197,6 +197,9 @@ open class NineGridView @JvmOverloads constructor(
 
         abstract fun getItemCount(): Int
 
+        /**
+         * 分发各种不同itemType，类似RecyclerView
+         */
         fun getItemViewType(position: Int): Int {
             return 0
         }
