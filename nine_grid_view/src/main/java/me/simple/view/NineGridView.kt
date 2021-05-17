@@ -1,7 +1,6 @@
 package me.simple.view
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
@@ -14,11 +13,14 @@ open class NineGridView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr) {
 
+    /**横向的item数量*/
     var spanCount = 3
 
+    /**最多显示的item数量*/
     var maxCount = 9
 
-    var childMargin = 0
+    /**item间的间距*/
+    var itemGap = 0
 
     var adapter: Adapter? = null
         set(value) {
@@ -39,8 +41,7 @@ open class NineGridView @JvmOverloads constructor(
             val typedArray = context.obtainStyledAttributes(attrs, R.styleable.NineGridView)
             spanCount = typedArray.getInt(R.styleable.NineGridView_spanCount, spanCount)
             maxCount = typedArray.getInt(R.styleable.NineGridView_maxCount, maxCount)
-            childMargin =
-                typedArray.getDimension(R.styleable.NineGridView_childMargin, dp2px(1f)).toInt()
+            itemGap = typedArray.getDimension(R.styleable.NineGridView_itemGap, dp2px(1f)).toInt()
             typedArray.recycle()
         }
     }
@@ -52,7 +53,7 @@ open class NineGridView @JvmOverloads constructor(
         }
 
         val adapter = adapter!!
-        //
+        //测量SingleView
         if (adapter.adaptSingleView() && adapter.getItemCount() == 1) {
             measureChildren(widthMeasureSpec, heightMeasureSpec)
             val adaptHeightMeasureSpec =
@@ -61,12 +62,12 @@ open class NineGridView @JvmOverloads constructor(
             return
         }
 
-        //
+        //测量ItemView
         val lineCount = getLineCount()
         val width = MeasureSpec.getSize(widthMeasureSpec)
         val height = width / spanCount * lineCount
 
-        val itemWidth = (width - (childMargin * (spanCount - 1))) / spanCount
+        val itemWidth = (width - (itemGap * (spanCount - 1))) / spanCount
         val childMeasureSpec = MeasureSpec.makeMeasureSpec(itemWidth, MeasureSpec.EXACTLY)
         measureChildren(childMeasureSpec, childMeasureSpec)
 
@@ -112,9 +113,9 @@ open class NineGridView @JvmOverloads constructor(
             val skipPosition = if (adapter.adaptFourItem() && displayCount == 4) 2 else spanCount
             if ((i + 1) % skipPosition == 0) {//
                 left = 0
-                top = bottom + childMargin
+                top = bottom + itemGap
             } else {
-                left = right + childMargin
+                left = right + itemGap
             }
         }
 
@@ -212,6 +213,9 @@ open class NineGridView @JvmOverloads constructor(
 
         //-------单个View适配
 
+        /**
+         * 是否适配单个ItemView的情况
+         */
         open fun adaptSingleView(): Boolean = false
 
         open fun onCreateSingleView(parent: ViewGroup, viewType: Int): View? = null
@@ -222,6 +226,9 @@ open class NineGridView @JvmOverloads constructor(
 
         //-------额外的View
 
+        /**
+         * 是否显示额外的View
+         */
         open fun enableExtraView(): Boolean = false
 
         open fun onCreateExtraView(parent: ViewGroup, viewType: Int): View? = null

@@ -40,7 +40,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        app:childMargin="2dp"
+        app:itemGap="3dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvNick"
         app:layout_constraintTop_toBottomOf="@id/tvDesc" />
