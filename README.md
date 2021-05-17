@@ -24,7 +24,9 @@ allprojects {
 ```
 
 ```groovy
-
+dependencies {
+    implementation 'com.github.simplepeng:NineGridView:v1.0.0'
+}
 ```
 
 ## 使用
