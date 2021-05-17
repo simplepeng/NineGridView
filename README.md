@@ -14,6 +14,8 @@
 
 ## 依赖
 
+[![](https://jitpack.io/v/simplepeng/NineGridView.svg)](https://jitpack.io/#simplepeng/NineGridView)
+
 ```groovy
 allprojects {
 	repositories {
