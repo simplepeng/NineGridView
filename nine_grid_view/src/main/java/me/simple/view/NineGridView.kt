@@ -195,30 +195,21 @@ open class NineGridView @JvmOverloads constructor(
 
     abstract class Adapter {
 
+        // 返回总的item数量
         abstract fun getItemCount(): Int
 
-        /**
-         * 分发各种不同itemType，类似RecyclerView
-         */
-        fun getItemViewType(position: Int): Int {
-            return 0
-        }
+        //分发各种不同itemType，类似RecyclerView
+        fun getItemViewType(position: Int) = 0
 
-        //-------适配4个itemView那种情况
-
+        //适配4个itemView的样式-类似哔哩哔哩
         open fun adaptFourItem(): Boolean = false
 
-        //-------默认的ItemView
-
+        //默认的ItemView样式
         abstract fun onCreateItemView(parent: ViewGroup, viewType: Int): View
 
         abstract fun onBindItemView(itemView: View, position: Int)
 
-        //-------单个View适配
-
-        /**
-         * 是否适配单个ItemView的情况
-         */
+        //是否适配单个ItemView的样式
         open fun adaptSingleView(): Boolean = false
 
         open fun onCreateSingleView(parent: ViewGroup, viewType: Int): View? = null
@@ -227,11 +218,7 @@ open class NineGridView @JvmOverloads constructor(
 
         }
 
-        //-------额外的View
-
-        /**
-         * 是否显示额外的View
-         */
+        //是否适配额外的View的样式
         open fun enableExtraView(): Boolean = false
 
         open fun onCreateExtraView(parent: ViewGroup, viewType: Int): View? = null

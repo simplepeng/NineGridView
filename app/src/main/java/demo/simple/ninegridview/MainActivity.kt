@@ -136,9 +136,7 @@ class MainActivity : AppCompatActivity() {
         private val items: List<String>
     ) : NineGridView.Adapter() {
 
-        override fun getItemCount(): Int {
-            return items.size
-        }
+        override fun getItemCount() = items.size
 
         override fun adaptFourItem() = true
 
@@ -157,7 +155,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         //
-
         override fun adaptSingleView() = true
 
         override fun onCreateSingleView(parent: ViewGroup, viewType: Int): View? {

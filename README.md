@@ -39,6 +39,43 @@ dependencies {
 class Adapter : NineGridView.Adapter()
 ```
 
+```kotlin
+abstract class Adapter {
+
+    // 返回总的item数量
+    abstract fun getItemCount(): Int
+
+    //分发各种不同itemType，类似RecyclerView
+    fun getItemViewType(position: Int) = 0
+
+    //适配4个itemView的样式-类似哔哩哔哩
+    open fun adaptFourItem(): Boolean = false
+
+    //默认的ItemView样式
+    abstract fun onCreateItemView(parent: ViewGroup, viewType: Int): View
+
+    abstract fun onBindItemView(itemView: View, position: Int)
+
+    //是否适配单个ItemView的样式
+    open fun adaptSingleView(): Boolean = false
+
+    open fun onCreateSingleView(parent: ViewGroup, viewType: Int): View? = null
+
+    open fun onBindSingleView(singleView: View, position: Int) {
+
+    }
+
+    //是否适配额外的View的样式
+    open fun enableExtraView(): Boolean = false
+
+    open fun onCreateExtraView(parent: ViewGroup, viewType: Int): View? = null
+
+    open fun onBindExtraView(extraView: View, position: Int) {
+
+    }
+}
+```
+
 可使用的属性
 
 ```xml
