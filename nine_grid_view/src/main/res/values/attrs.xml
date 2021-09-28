@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="NineGridView">
-        <attr name="spanCount" format="integer" />
-        <attr name="itemGap" format="integer|dimension" />
-        <attr name="maxCount" format="integer" />
+        <attr name="ngv_spanCount" format="integer" />
+        <attr name="ngv_itemGap" format="integer|dimension" />
+        <attr name="ngv_maxCount" format="integer" />
     </declare-styleable>
 </resources>

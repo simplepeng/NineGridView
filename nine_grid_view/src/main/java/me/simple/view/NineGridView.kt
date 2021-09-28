@@ -39,9 +39,10 @@ open class NineGridView @JvmOverloads constructor(
     init {
         if (attrs != null) {
             val typedArray = context.obtainStyledAttributes(attrs, R.styleable.NineGridView)
-            spanCount = typedArray.getInt(R.styleable.NineGridView_spanCount, spanCount)
-            maxCount = typedArray.getInt(R.styleable.NineGridView_maxCount, maxCount)
-            itemGap = typedArray.getDimension(R.styleable.NineGridView_itemGap, dp2px(1f)).toInt()
+            spanCount = typedArray.getInt(R.styleable.NineGridView_ngv_spanCount, spanCount)
+            maxCount = typedArray.getInt(R.styleable.NineGridView_ngv_maxCount, maxCount)
+            itemGap =
+                typedArray.getDimension(R.styleable.NineGridView_ngv_itemGap, dp2px(1f)).toInt()
             typedArray.recycle()
         }
     }
