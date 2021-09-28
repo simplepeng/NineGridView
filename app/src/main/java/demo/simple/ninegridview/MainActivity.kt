@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import demo.simple.ninegridview.databinding.ActivityMainBinding
 import me.simple.loadmoreadapter.LoadMoreAdapter
+import me.simple.view.ImageAdapter
 import me.simple.view.NineGridView
 import java.util.*
 
@@ -122,13 +123,30 @@ class MainActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: CircleViewHolder, position: Int) {
             val item = mItems[holder.adapterPosition]
             holder.tvDesc.text = item.text
-            holder.nineGridView.adapter = Adapter(item.images)
+            holder.tvNum.text = item.images.size.toString()
+
+//            holder.nineGridView.adapter = Adapter(item.images)
+
+            val imageAdapter = ImageAdapter(item.images, onBindView = { imageView, item, position ->
+                Glide.with(imageView)
+                    .load(item)
+                    .centerCrop()
+                    .into(imageView)
+            })
+            imageAdapter.onItemViewClick = { item, position ->
+                toast("ItemView click -- $position")
+            }
+            imageAdapter.onExtraViewClick = { position ->
+                toast("ExtraView click  $position")
+            }
+            holder.nineGridView.adapter = imageAdapter
         }
     }
 
 
     class CircleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvDesc = itemView.findViewById<TextView>(R.id.tvDesc)
+        val tvNum = itemView.findViewById<TextView>(R.id.tvNum)
         val nineGridView = itemView.findViewById<NineGridView>(R.id.nineGridView)
     }
 
