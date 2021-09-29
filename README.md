@@ -99,6 +99,10 @@ holder.nineGridView.adapter = imageAdapter
 
 ## 版本迭代
 
-* v1.0.1：修改属性名，增加`ImageAdapter`，去掉`BuildConfig.java`
+* v1.0.1：
+  * 修改属性名，预防和其他View的属性冲突
+  * 增加`ImageAdapter`
+  * 去掉`BuildConfig.java`
+  * 增加`isInEditMode`，在布局编辑状态也可以预览样式
 * v1.0.0：初次上传
 
