@@ -116,11 +116,12 @@ open class NineGridView @JvmOverloads constructor(
             child.layout(left, top, right, bottom)
             if (isInEditMode) {
                 adapter.onBindItemView(child, i)
-            } else {
-                child.post {
-                    adapter.onBindItemView(child, i)
-                }
             }
+//            else {
+//                child.post {
+//                    adapter.onBindItemView(child, i)
+//                }
+//            }
 
             val skipPosition = if (adapter.adaptFourItem() && displayCount == 4) 2 else spanCount
             if ((i + 1) % skipPosition == 0) {//
@@ -139,11 +140,20 @@ open class NineGridView @JvmOverloads constructor(
             bottom = height
             top = bottom - extraView.measuredWidth
             extraView.layout(left, top, right, bottom)
-            extraView.post {
-                adapter.onBindExtraView(extraView, childCount - 1)
-            }
+//            extraView.post {
+//                adapter.onBindExtraView(extraView, childCount - 1)
+//            }
         }
 
+        for (index in 0 until childCount) {
+            val child = getChildAt(index)
+            val lp = child.layoutParams as ItemViewLayoutParams
+            if (lp.type == ItemViewLayoutParams.TYPE_ITEM_VIEW) {
+                adapter.onBindItemView(child, index)
+            } else if (lp.type == ItemViewLayoutParams.TYPE_EXTRA_VIEW) {
+                adapter.onBindExtraView(child, index)
+            }
+        }
     }
 
     private fun addViews() {
@@ -170,14 +180,24 @@ open class NineGridView @JvmOverloads constructor(
         for (position in 0 until displayCount) {
             itemViewType = adapter.getItemViewType(position)
             val itemView = adapter.onCreateItemView(this, itemViewType)
-            addViewInLayout(itemView, position, createItemViewLayoutParams(), true)
+            addViewInLayout(
+                itemView,
+                position,
+                createItemViewLayoutParams(ItemViewLayoutParams.TYPE_ITEM_VIEW),
+                true
+            )
         }
 
         //添加额外的itemView
         itemViewType = adapter.getItemViewType(displayCount)
         val extraView = adapter.onCreateExtraView(this, itemViewType)
         if (adapter.enableExtraView() && extraView != null && adapter.getItemCount() > maxCount) {
-            addViewInLayout(extraView, displayCount, createItemViewLayoutParams(), true)
+            addViewInLayout(
+                extraView,
+                displayCount,
+                createItemViewLayoutParams(ItemViewLayoutParams.TYPE_EXTRA_VIEW),
+                true
+            )
         }
 
         //
@@ -187,8 +207,25 @@ open class NineGridView @JvmOverloads constructor(
     /**
      * 创建itemView的LayoutParams
      */
-    private fun createItemViewLayoutParams() =
-        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+    private fun createItemViewLayoutParams(type: Int): LayoutParams {
+        val lp = ItemViewLayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        lp.type = type
+        return layoutParams
+    }
+
+
+    internal class ItemViewLayoutParams(
+        width: Int,
+        height: Int
+    ) : MarginLayoutParams(width, height) {
+
+        companion object {
+            const val TYPE_ITEM_VIEW = 1
+            const val TYPE_EXTRA_VIEW = 2
+        }
+
+        var type: Int = TYPE_ITEM_VIEW
+    }
 
     /**
      * 真实要显示的itemCount

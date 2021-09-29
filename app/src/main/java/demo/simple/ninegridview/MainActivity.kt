@@ -134,9 +134,10 @@ class MainActivity : AppCompatActivity() {
                     .centerCrop()
                     .into(imageView)
             })
-            imageAdapter.onItemViewClick = { item, position ->
+            imageAdapter.onItemViewClick = { url, position ->
                 toast("ItemView click -- $position")
-                previewImage(item)
+//                previewImage(item)
+                previewImage(item.images, position)
             }
             imageAdapter.onExtraViewClick = { position ->
                 toast("ExtraView click  $position")
