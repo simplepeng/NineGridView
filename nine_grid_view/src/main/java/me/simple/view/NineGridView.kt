@@ -80,6 +80,13 @@ open class NineGridView @JvmOverloads constructor(
         layoutChildren()
     }
 
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        if (isInEditMode) {
+            adapter = InEditModeAdapter(maxCount)
+        }
+    }
+
     private fun layoutChildren() {
 
         var left = 0
@@ -107,8 +114,12 @@ open class NineGridView @JvmOverloads constructor(
             bottom = top + child.measuredWidth
 
             child.layout(left, top, right, bottom)
-            child.post {
+            if (isInEditMode) {
                 adapter.onBindItemView(child, i)
+            } else {
+                child.post {
+                    adapter.onBindItemView(child, i)
+                }
             }
 
             val skipPosition = if (adapter.adaptFourItem() && displayCount == 4) 2 else spanCount
