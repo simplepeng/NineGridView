@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.stfalcon.imageviewer.StfalconImageViewer
 import demo.simple.ninegridview.databinding.ActivityMainBinding
 import me.simple.loadmoreadapter.LoadMoreAdapter
 import me.simple.view.ImageAdapter
@@ -135,6 +136,7 @@ class MainActivity : AppCompatActivity() {
             })
             imageAdapter.onItemViewClick = { item, position ->
                 toast("ItemView click -- $position")
+                previewImage(item)
             }
             imageAdapter.onExtraViewClick = { position ->
                 toast("ExtraView click  $position")
@@ -148,6 +150,18 @@ class MainActivity : AppCompatActivity() {
         val tvDesc = itemView.findViewById<TextView>(R.id.tvDesc)
         val tvNum = itemView.findViewById<TextView>(R.id.tvNum)
         val nineGridView = itemView.findViewById<NineGridView>(R.id.nineGridView)
+    }
+
+    private fun previewImage(url: String) {
+        StfalconImageViewer.Builder(this, mutableListOf(url)) { view, image ->
+            Glide.with(view).load(image).into(view)
+        }.show()
+    }
+
+    private fun previewImage(urls: List<String>, position: Int) {
+        StfalconImageViewer.Builder(this, urls) { view, image ->
+            Glide.with(view).load(image).into(view)
+        }.show().setCurrentPosition(position)
     }
 
     inner class Adapter(

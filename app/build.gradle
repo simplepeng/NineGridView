@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "demo.simple.ninegridview"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -49,6 +49,7 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.github.simplepeng:LoadMoreAdapter:v1.0.5'
     implementation 'com.github.bumptech.glide:glide:4.12.0'
+    implementation 'com.github.stfalcon-studio:StfalconImageViewer:v1.0.1'
     //
 //    implementation project(path: ':nine_grid_view')
     implementation 'com.github.simplepeng:NineGridView:v1.0.1'
