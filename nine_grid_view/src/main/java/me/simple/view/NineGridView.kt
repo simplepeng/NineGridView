@@ -22,18 +22,27 @@ open class NineGridView @JvmOverloads constructor(
     /**item间的间距*/
     var itemGap = 0
 
+    //
+    var singleStrategy: Int = Strategy.WRAP
+
     var adapter: Adapter? = null
         set(value) {
             field = value
             addViews()
         }
 
-    open fun dp2px(value: Float): Float {
+    private fun dp2px(value: Float): Float {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             value,
             resources.displayMetrics
         )
+    }
+
+    object Strategy {
+        const val WRAP = 0
+        const val MATCH = 1
+        const val CUSTOM = 2
     }
 
     init {
@@ -43,6 +52,10 @@ open class NineGridView @JvmOverloads constructor(
             maxCount = typedArray.getInt(R.styleable.NineGridView_ngv_maxCount, maxCount)
             itemGap =
                 typedArray.getDimension(R.styleable.NineGridView_ngv_itemGap, dp2px(1f)).toInt()
+
+            singleStrategy =
+                typedArray.getInt(R.styleable.NineGridView_ngv_single_strategy, Strategy.WRAP)
+
             typedArray.recycle()
         }
     }
@@ -97,63 +110,85 @@ open class NineGridView @JvmOverloads constructor(
         val adapter = adapter!!
 
         //单itemView并且要适配的情况
-        if (adapter.adaptSingleView() && childCount == 1) {
-            val singleView = getChildAt(0)
-            singleView.layout(0, 0, singleView.measuredWidth, measuredHeight)
-            singleView.post {
-                adapter.onBindSingleView(singleView, 0)
+        if (childCount == 1) {
+            layoutSingle()
+        } else {
+
+            //默认itemView的情况
+            val displayCount = getDisplayCount()
+            for (i in 0 until displayCount) {
+                val child = getChildAt(i)
+                right = left + child.measuredWidth
+                bottom = top + child.measuredWidth
+
+                child.layout(left, top, right, bottom)
+                if (isInEditMode) {
+                    adapter.onBindItemView(child, i)
+                }
+
+                val skipPosition =
+                    if (adapter.adaptFourItem() && displayCount == 4) 2 else spanCount
+                if ((i + 1) % skipPosition == 0) {//
+                    left = 0
+                    top = bottom + itemGap
+                } else {
+                    left = right + itemGap
+                }
             }
-            return
-        }
 
-        //默认itemView的情况
-        val displayCount = getDisplayCount()
-        for (i in 0 until displayCount) {
-            val child = getChildAt(i)
-            right = left + child.measuredWidth
-            bottom = top + child.measuredWidth
-
-            child.layout(left, top, right, bottom)
-            if (isInEditMode) {
-                adapter.onBindItemView(child, i)
-            }
-//            else {
-//                child.post {
-//                    adapter.onBindItemView(child, i)
-//                }
-//            }
-
-            val skipPosition = if (adapter.adaptFourItem() && displayCount == 4) 2 else spanCount
-            if ((i + 1) % skipPosition == 0) {//
-                left = 0
-                top = bottom + itemGap
-            } else {
-                left = right + itemGap
-            }
-        }
-
-        //需要添加额外itemView的情况
-        if (adapter.enableExtraView() && adapter.getItemCount() > maxCount) {
-            val extraView = getChildAt(childCount - 1)
-            right = width
-            left = right - extraView.measuredWidth
-            bottom = height
-            top = bottom - extraView.measuredWidth
-            extraView.layout(left, top, right, bottom)
-//            extraView.post {
-//                adapter.onBindExtraView(extraView, childCount - 1)
-//            }
-        }
-
-        for (index in 0 until childCount) {
-            val child = getChildAt(index)
-            val lp = child.layoutParams as ItemViewLayoutParams
-            if (lp.type == ItemViewLayoutParams.TYPE_ITEM_VIEW) {
-                adapter.onBindItemView(child, index)
-            } else if (lp.type == ItemViewLayoutParams.TYPE_EXTRA_VIEW) {
-                adapter.onBindExtraView(child, index)
+            //需要添加额外itemView的情况
+            if (adapter.enableExtraView() && adapter.getItemCount() > maxCount) {
+                val extraView = getChildAt(childCount - 1)
+                right = width
+                left = right - extraView.measuredWidth
+                bottom = height
+                top = bottom - extraView.measuredWidth
+                extraView.layout(left, top, right, bottom)
             }
         }
+
+        //绑定数据
+        post {
+            for (index in 0 until childCount) {
+                val child = getChildAt(index)
+
+                if (child.layoutParams is ItemViewLayoutParams) {
+                    val lp = child.layoutParams as ItemViewLayoutParams
+                    when (lp.type) {
+                        ItemViewLayoutParams.TYPE_ITEM_VIEW -> {
+                            adapter.onBindItemView(child, index)
+                        }
+                        ItemViewLayoutParams.TYPE_EXTRA_VIEW -> {
+                            adapter.onBindExtraView(child, index)
+                        }
+                        ItemViewLayoutParams.TYPE_SINGLE_VIEW -> {
+                            adapter.onBindSingleView(child, index)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //
+    private fun layoutSingle() {
+        val singleView = getChildAt(0)
+        when (singleStrategy) {
+            Strategy.WRAP -> {
+                val itemSize = width / spanCount
+                singleView.layout(0, 0, itemSize, itemSize)
+            }
+            Strategy.MATCH -> {
+                singleView.layout(0, 0, width, width)
+            }
+            Strategy.CUSTOM -> {
+                singleView.layout(0, 0, singleView.measuredWidth, measuredHeight)
+            }
+        }
+
+//        singleView.post {
+//            adapter?.onBindSingleView(singleView, 0)
+//        }
     }
 
     private fun addViews() {
@@ -170,8 +205,13 @@ open class NineGridView @JvmOverloads constructor(
 
         //要适配单个View的情况
         val singleView = adapter.onCreateSingleView(this, itemViewType)
-        if (adapter.adaptSingleView() && singleView != null && adapter.getItemCount() == 1) {
-            addViewInLayout(singleView, 0, singleView.layoutParams, true)
+        if (singleView != null && adapter.getItemCount() == 1) {
+            addViewInLayout(
+                singleView,
+                0,
+                createSingleViewLayoutParams(singleView),
+                true
+            )
             requestLayout()
             return
         }
@@ -207,6 +247,19 @@ open class NineGridView @JvmOverloads constructor(
     /**
      * 创建itemView的LayoutParams
      */
+    private fun createSingleViewLayoutParams(singleView: View): LayoutParams {
+        return if (singleStrategy == Strategy.CUSTOM) {
+            singleView.layoutParams
+        } else {
+            ItemViewLayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT).apply {
+                type = ItemViewLayoutParams.TYPE_SINGLE_VIEW
+            }
+        }
+    }
+
+    /**
+     * 创建itemView的LayoutParams
+     */
     private fun createItemViewLayoutParams(type: Int): LayoutParams {
         val lp = ItemViewLayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         lp.type = type
@@ -220,8 +273,9 @@ open class NineGridView @JvmOverloads constructor(
     ) : MarginLayoutParams(width, height) {
 
         companion object {
-            const val TYPE_ITEM_VIEW = 1
-            const val TYPE_EXTRA_VIEW = 2
+            const val TYPE_SINGLE_VIEW = 1
+            const val TYPE_ITEM_VIEW = 2
+            const val TYPE_EXTRA_VIEW = 3
         }
 
         var type: Int = TYPE_ITEM_VIEW

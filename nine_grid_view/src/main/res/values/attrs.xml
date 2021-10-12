@@ -2,7 +2,29 @@
 <resources>
     <declare-styleable name="NineGridView">
         <attr name="ngv_spanCount" format="integer" />
-        <attr name="ngv_itemGap" format="integer|dimension" />
+        <attr name="ngv_itemGap" format="dimension" />
         <attr name="ngv_maxCount" format="integer" />
+
+        <attr name="ngv_single_strategy">
+            <enum name="wrap" value="0" />
+            <enum name="match" value="1" />
+            <enum name="custom" value="2" />
+        </attr>
+
+<!--        <attr name="ngv_two_strategy">-->
+<!--            <enum name="default" value="0" />-->
+<!--            <enum name="match" value="1" />-->
+<!--        </attr>-->
+
+<!--        <attr name="ngv_four_strategy">-->
+<!--            <enum name="default" value="0" />-->
+<!--            <enum name="match" value="1" />-->
+<!--            <enum name="bili" value="2" />-->
+<!--        </attr>-->
+
+<!--        <attr name="ngv_extra_strategy">-->
+<!--            <enum name="show" value="0" />-->
+<!--            <enum name="hide" value="1" />-->
+<!--        </attr>-->
     </declare-styleable>
 </resources>

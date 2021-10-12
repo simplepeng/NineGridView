@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
         val randomCount = Random().nextInt(mImages.size)
 //        val randomCount = 9
 //        val randomCount = 4
-        for (i in 0 until randomCount) {
+        for (i in 0 until 2) {
             val index = Random().nextInt(mImages.size)
             images.add(mImages[index])
         }
@@ -142,7 +142,11 @@ class MainActivity : AppCompatActivity() {
             imageAdapter.onExtraViewClick = { position ->
                 toast("ExtraView click  $position")
             }
-            holder.nineGridView.adapter = imageAdapter
+
+            holder.nineGridView.apply {
+                singleStrategy = NineGridView.Strategy.WRAP
+                adapter = imageAdapter
+            }
         }
     }
 
