@@ -22,8 +22,11 @@ open class NineGridView @JvmOverloads constructor(
     /**item间的间距*/
     var itemGap = 0
 
-    //
-    var singleStrategy: Int = Strategy.WRAP
+    //单个item时的适配策略
+    var singleStrategy: Int = Strategy.FIXED
+
+    //两个个item时的适配策略
+    var twoStrategy: Int = Strategy.FIXED
 
     var adapter: Adapter? = null
         set(value) {
@@ -40,9 +43,10 @@ open class NineGridView @JvmOverloads constructor(
     }
 
     object Strategy {
-        const val WRAP = 0
-        const val MATCH = 1
+        const val FIXED = 0
+        const val FILL = 1
         const val CUSTOM = 2
+        const val BILI = 3
     }
 
     init {
@@ -53,8 +57,14 @@ open class NineGridView @JvmOverloads constructor(
             itemGap =
                 typedArray.getDimension(R.styleable.NineGridView_ngv_itemGap, dp2px(1f)).toInt()
 
-            singleStrategy =
-                typedArray.getInt(R.styleable.NineGridView_ngv_single_strategy, Strategy.WRAP)
+            singleStrategy = typedArray.getInt(
+                R.styleable.NineGridView_ngv_single_strategy,
+                Strategy.FIXED
+            )
+            twoStrategy = typedArray.getInt(
+                R.styleable.NineGridView_ngv_two_strategy,
+                Strategy.FIXED
+            )
 
             typedArray.recycle()
         }
@@ -67,7 +77,7 @@ open class NineGridView @JvmOverloads constructor(
         }
 
         val adapter = adapter!!
-        //测量SingleView
+        //测量单个itemView的情况
         if (adapter.adaptSingleView() && adapter.getItemCount() == 1) {
             measureChildren(widthMeasureSpec, heightMeasureSpec)
             val adaptHeightMeasureSpec =
@@ -174,11 +184,11 @@ open class NineGridView @JvmOverloads constructor(
     private fun layoutSingle() {
         val singleView = getChildAt(0)
         when (singleStrategy) {
-            Strategy.WRAP -> {
+            Strategy.FIXED -> {
                 val itemSize = width / spanCount
                 singleView.layout(0, 0, itemSize, itemSize)
             }
-            Strategy.MATCH -> {
+            Strategy.FILL -> {
                 singleView.layout(0, 0, width, width)
             }
             Strategy.CUSTOM -> {
@@ -281,17 +291,13 @@ open class NineGridView @JvmOverloads constructor(
         var type: Int = TYPE_ITEM_VIEW
     }
 
-    /**
-     * 真实要显示的itemCount
-     */
+    //真实要显示的itemCount
     private fun getDisplayCount(): Int {
         if (adapter == null) return 0
         return if (adapter!!.getItemCount() > maxCount) maxCount else adapter!!.getItemCount()
     }
 
-    /**
-     * 获取行数
-     */
+    //获取行数
     private fun getLineCount(): Int {
         return ceil(getDisplayCount().toDouble() / spanCount).toInt()
     }

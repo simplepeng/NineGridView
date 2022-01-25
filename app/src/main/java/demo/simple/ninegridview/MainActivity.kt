@@ -84,7 +84,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun createImages(): List<String> {
         val images = mutableListOf<String>()
-        val randomCount = Random().nextInt(mImages.size)
+        var randomCount = Random().nextInt(mImages.size)
+        randomCount = 1
 //        val randomCount = 9
 //        val randomCount = 4
         for (i in 0 until randomCount) {
@@ -140,7 +141,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             holder.nineGridView.apply {
-                singleStrategy = NineGridView.Strategy.WRAP
+                singleStrategy = NineGridView.Strategy.FIXED
                 adapter = imageAdapter
             }
         }

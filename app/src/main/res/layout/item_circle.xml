@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:layout_constraintHorizontal_chainStyle="spread"
     android:padding="8dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -56,7 +57,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvDesc"
         app:ngv_itemGap="3dp"
         app:ngv_maxCount="9"
-        app:ngv_single_strategy="wrap"
+        app:ngv_single_strategy="fixed"
         app:ngv_spanCount="3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
