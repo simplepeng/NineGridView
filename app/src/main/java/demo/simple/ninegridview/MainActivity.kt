@@ -24,19 +24,13 @@ class MainActivity : AppCompatActivity() {
 
     private val mImages by lazy {
         mutableListOf(
-            "https://gank.io/images/ce66aa74d78f49919085b2b2808ecc50",
-            "https://gank.io/images/02eb8ca3297f4931ab64b7ebd7b5b89c",
-            "https://gank.io/images/0f536c69ada247429b8a9e38d3dba8bb",
-            "https://gank.io/images/ccf0316264d245018fc651cffa6e90de",
-            "https://gank.io/images/95ddb01b6bd34a85aedfda4c9e9bd003",
-            "https://gank.io/images/e92911f5ff9446d5a899b652b1934b93",
-            "https://gank.io/images/6e57b254da79416bbe58248b570ea85f",
-            "https://gank.io/images/e0b652d2a0cb46ba888a935c525bd312",
-            "https://gank.io/images/95ddb01b6bd34a85aedfda4c9e9bd003",
-            "https://gank.io/images/4817628a6762410895f814079a6690a1",
-            "https://gank.io/images/0f536c69ada247429b8a9e38d3dba8bb",
-            "https://gank.io/images/1a515f1508e345e2bf24673c2c2d50c4",
-            "https://gank.io/images/4002b1fd18544802b80193fad27eaa62"
+            "https://img2.baidu.com/it/u=111010057,1963484761&fm=26&fmt=auto",
+            "https://img0.baidu.com/it/u=680204813,2408273793&fm=26&fmt=auto",
+            "https://img0.baidu.com/it/u=4198545283,538361922&fm=26&fmt=auto",
+            "https://img2.baidu.com/it/u=1042301913,584297321&fm=26&fmt=auto",
+            "https://img0.baidu.com/it/u=3329176626,3830333762&fm=26&fmt=auto",
+            "https://img1.baidu.com/it/u=2199515026,1341231739&fm=26&fmt=auto",
+            "https://img2.baidu.com/it/u=1094955877,138168367&fm=26&fmt=auto"
         )
     }
 
