@@ -7,15 +7,15 @@ import android.widget.ImageView
 import android.widget.TextView
 
 open class ImageAdapter<T>(
-    private val items: List<T>,
-    private val onBindView: (imageView: ImageView, item: T, position: Int) -> Unit,
+    private val items: List<T>?,
+    private val onBindView: ((imageView: ImageView, item: T, position: Int) -> Unit)?,
 ) : NineGridView.Adapter() {
 
     var onItemViewClick: ((item: T, position: Int) -> Unit)? = null
     var onExtraViewClick: ((position: Int) -> Unit)? = null
 
     //
-    override fun getItemCount() = items.size
+    override fun getItemCount() = items?.size ?: 0
 
     //是否适配4个ImageView
     override fun adaptFourItem() = true
@@ -26,11 +26,12 @@ open class ImageAdapter<T>(
     }
 
     override fun onBindItemView(itemView: View, position: Int) {
-        val item = items[position]
+        if (items.isNullOrEmpty()) return
+        val item = items[position] ?: return
         itemView.setOnClickListener {
             onItemViewClick?.invoke(item, position)
         }
-        this.onBindView(itemView as ImageView, item, position)
+        this.onBindView?.invoke(itemView as ImageView, item, position)
     }
 
     //适配单个ImageView
@@ -41,11 +42,12 @@ open class ImageAdapter<T>(
     }
 
     override fun onBindSingleView(singleView: View, position: Int) {
-        val item = items[position]
+        if (items.isNullOrEmpty()) return
+        val item = items[position] ?: return
         singleView.setOnClickListener {
             onItemViewClick?.invoke(item, position)
         }
-        this.onBindView(singleView as ImageView, item, position)
+        this.onBindView?.invoke(singleView as ImageView, item, position)
     }
 
     //是否适配显示额外的
@@ -56,6 +58,7 @@ open class ImageAdapter<T>(
     }
 
     override fun onBindExtraView(extraView: View, position: Int) {
+        if (items.isNullOrEmpty()) return
         val tvExtra = extraView.findViewById<TextView>(R.id.tvExtra)
         val extraCount = items.size - position
         tvExtra.text = String.format("+%s", extraCount)

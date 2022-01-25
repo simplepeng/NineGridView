@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         circleAdapter.notifyDataSetChanged()
     }
 
+    //造数据
     private fun createItems(): List<ItemModel> {
         val items = mutableListOf<ItemModel>()
         for (i in 0 until 5) {
@@ -86,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         val randomCount = Random().nextInt(mImages.size)
 //        val randomCount = 9
 //        val randomCount = 4
-        for (i in 0 until 2) {
+        for (i in 0 until randomCount) {
             val index = Random().nextInt(mImages.size)
             images.add(mImages[index])
         }
@@ -126,6 +127,7 @@ class MainActivity : AppCompatActivity() {
                 Glide.with(imageView)
                     .load(item)
                     .centerCrop()
+                    .placeholder(R.drawable.sp_loading)
                     .into(imageView)
             })
             imageAdapter.onItemViewClick = { url, position ->

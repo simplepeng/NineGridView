@@ -5,7 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 
-internal class InEditModeAdapter(val count:Int) : NineGridView.Adapter() {
+internal class InEditModeAdapter(
+    private val count: Int
+) : NineGridView.Adapter() {
 
     override fun getItemCount(): Int {
         return count
