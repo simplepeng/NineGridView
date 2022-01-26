@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
     private fun createImages(): List<String> {
         val images = mutableListOf<String>()
         var randomCount = Random().nextInt(mImages.size)
-        randomCount = 1
+        randomCount = 2
 //        val randomCount = 9
 //        val randomCount = 4
         for (i in 0 until randomCount) {
@@ -141,7 +141,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             holder.nineGridView.apply {
-                singleStrategy = NineGridView.Strategy.FIXED
                 adapter = imageAdapter
             }
         }
@@ -172,7 +171,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun getItemCount() = items.size
 
-        override fun adaptFourItem() = true
+//        override fun adaptFourItem() = true
 
         override fun onCreateItemView(parent: ViewGroup, viewType: Int): View {
             return LayoutInflater.from(parent.context).inflate(R.layout.item_image, parent, false)
@@ -189,7 +188,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         //
-        override fun adaptSingleView() = true
+//        override fun adaptSingleView() = true
 
         override fun onCreateSingleView(parent: ViewGroup, viewType: Int): View? {
             return LayoutInflater.from(parent.context).inflate(R.layout.item_single, parent, false)
@@ -207,7 +206,7 @@ class MainActivity : AppCompatActivity() {
 
         //
 
-        override fun enableExtraView() = true
+//        override fun enableExtraView() = true
 
         override fun onCreateExtraView(parent: ViewGroup, viewType: Int): View? {
             return LayoutInflater.from(parent.context).inflate(R.layout.item_extra, parent, false)

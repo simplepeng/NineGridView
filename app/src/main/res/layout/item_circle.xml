@@ -55,9 +55,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvNick"
         app:layout_constraintTop_toBottomOf="@id/tvDesc"
+        app:ngv_two_strategy="fill"
         app:ngv_itemGap="3dp"
         app:ngv_maxCount="9"
-        app:ngv_single_strategy="fixed"
         app:ngv_spanCount="3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
