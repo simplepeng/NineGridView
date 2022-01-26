@@ -13,20 +13,26 @@ open class NineGridView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ViewGroup(context, attrs, defStyleAttr) {
 
-    /**横向的item数量*/
+    //横向的item数量
     var spanCount = 3
 
-    /**最多显示的item数量*/
+    //最多显示的item数量
     var maxCount = 9
 
-    /**item间的间距*/
+    //item间的间距
     var itemGap = 0
 
     //单个item时的适配策略
     var singleStrategy: Int = Strategy.USUAL
 
-    //两个个item时的适配策略
+    //两个item时的适配策略
     var twoStrategy: Int = Strategy.USUAL
+
+    //三个item时的适配策略
+    var threeStrategy: Int = Strategy.USUAL
+
+    //三个item时的适配策略
+    var fourStrategy: Int = Strategy.USUAL
 
     //适配器
     var adapter: Adapter? = null
@@ -61,6 +67,14 @@ open class NineGridView @JvmOverloads constructor(
                 R.styleable.NineGridView_ngv_two_strategy,
                 Strategy.USUAL
             )
+            threeStrategy = typedArray.getInt(
+                R.styleable.NineGridView_ngv_three_strategy,
+                Strategy.USUAL
+            )
+            fourStrategy = typedArray.getInt(
+                R.styleable.NineGridView_ngv_four_strategy,
+                Strategy.USUAL
+            )
 
             typedArray.recycle()
         }
@@ -93,7 +107,7 @@ open class NineGridView @JvmOverloads constructor(
 
             }
             4 -> {
-
+                measureFourItem(widthMeasureSpec)
             }
             else -> {
             }
@@ -140,12 +154,31 @@ open class NineGridView @JvmOverloads constructor(
     private fun measureTwoItem(widthMeasureSpec: Int) {
         when (twoStrategy) {
             Strategy.FILL -> {
-                val width = MeasureSpec.getSize(widthMeasureSpec)
-                val itemSize = (width - itemGap) / 2
-                val childMeasureSpec = MeasureSpec.makeMeasureSpec(itemSize, MeasureSpec.EXACTLY)
-                measureChildren(childMeasureSpec, childMeasureSpec)
+                measureItemFill(widthMeasureSpec, 1)
+            }
+            else -> {
+                measureUsualItem(widthMeasureSpec)
+            }
+        }
+    }
 
-                setMeasuredDimension(width, itemSize)
+    private fun measureItemFill(
+        widthMeasureSpec: Int,
+        lineCount: Int
+    ) {
+        val width = MeasureSpec.getSize(widthMeasureSpec)
+        val itemSize = (width - itemGap) / 2
+        val childMeasureSpec = MeasureSpec.makeMeasureSpec(itemSize, MeasureSpec.EXACTLY)
+        measureChildren(childMeasureSpec, childMeasureSpec)
+        val height = itemSize * lineCount + ((lineCount - 1) * itemGap)
+
+        setMeasuredDimension(width, height)
+    }
+
+    private fun measureFourItem(widthMeasureSpec: Int) {
+        when (fourStrategy) {
+            Strategy.FILL -> {
+                measureItemFill(widthMeasureSpec, 2)
             }
             else -> {
                 measureUsualItem(widthMeasureSpec)
@@ -154,7 +187,6 @@ open class NineGridView @JvmOverloads constructor(
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        if (adapter == null) return
         layoutChildren()
     }
 
@@ -166,15 +198,18 @@ open class NineGridView @JvmOverloads constructor(
     }
 
     private fun layoutChildren() {
-
+        if (adapter == null) return
         val adapter = adapter!!
 
         when (childCount) {
             1 -> {
                 layoutSingleItem()
             }
-            2 -> {
+            2, 3 -> {
                 layoutTwoItem()
+            }
+            4 -> {
+                layoutFourItem()
             }
             else -> {
 //                layoutUsualItem()
@@ -222,10 +257,10 @@ open class NineGridView @JvmOverloads constructor(
     }
 
     private fun layoutTwoItem() {
-        layoutUsualItem2()
+        layoutUsualItem2(spanCount)
     }
 
-    private fun layoutUsualItem2() {
+    private fun layoutUsualItem2(skipLinePosition: Int) {
 
         var left = 0
         var top = 0
@@ -240,7 +275,7 @@ open class NineGridView @JvmOverloads constructor(
 
             itemView.layout(left, top, right, bottom)
 
-            if ((i + 1) % spanCount == 0) {//
+            if ((i + 1) % skipLinePosition == 0) {//
                 left = 0
                 top = bottom + itemGap
             } else {
@@ -249,35 +284,56 @@ open class NineGridView @JvmOverloads constructor(
         }
     }
 
-    private fun layoutUsualItem() {
-        val adapter = adapter ?: return
-
+    private fun layoutFourItem() {
         var left = 0
         var top = 0
         var right = 0
         var bottom = 0
 
-        val displayCount = getDisplayCount()
-        for (i in 0 until displayCount) {
-            val child = getChildAt(i)
-            right = left + child.measuredWidth
-            bottom = top + child.measuredWidth
-
-            child.layout(left, top, right, bottom)
-            if (isInEditMode) {
-                adapter.onBindItemView(child, i)
+        when (fourStrategy) {
+            Strategy.BILI -> {
+                layoutUsualItem2(2)
             }
-
-//            val skipPosition =
-//                if (adapter.adaptFourItem() && displayCount == 4) 2 else spanCount
-//            if ((i + 1) % skipPosition == 0) {//
-//                left = 0
-//                top = bottom + itemGap
-//            } else {
-//                left = right + itemGap
-//            }
+            Strategy.FILL -> {
+                layoutUsualItem2(2)
+            }
+            else -> {
+                layoutUsualItem2(spanCount)
+            }
         }
+
+
     }
+
+//    private fun layoutUsualItem() {
+//        val adapter = adapter ?: return
+//
+//        var left = 0
+//        var top = 0
+//        var right = 0
+//        var bottom = 0
+//
+//        val displayCount = getDisplayCount()
+//        for (i in 0 until displayCount) {
+//            val child = getChildAt(i)
+//            right = left + child.measuredWidth
+//            bottom = top + child.measuredWidth
+//
+//            child.layout(left, top, right, bottom)
+//            if (isInEditMode) {
+//                adapter.onBindItemView(child, i)
+//            }
+//
+////            val skipPosition =
+////                if (adapter.adaptFourItem() && displayCount == 4) 2 else spanCount
+////            if ((i + 1) % skipPosition == 0) {//
+////                left = 0
+////                top = bottom + itemGap
+////            } else {
+////                left = right + itemGap
+////            }
+//        }
+//    }
 
     //需要添加额外itemView的情况
 //    private fun layoutExtraView() {
