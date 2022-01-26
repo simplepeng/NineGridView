@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
     private fun createImages(): List<String> {
         val images = mutableListOf<String>()
         var randomCount = Random().nextInt(mImages.size)
-        randomCount = 3
+        randomCount = 1
 //        val randomCount = 9
 //        val randomCount = 4
         for (i in 0 until randomCount) {

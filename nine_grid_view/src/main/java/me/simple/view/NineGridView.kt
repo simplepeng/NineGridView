@@ -154,12 +154,19 @@ open class NineGridView @JvmOverloads constructor(
     ) {
         val width = MeasureSpec.getSize(widthMeasureSpec)
         var height = MeasureSpec.getSize(heightMeasureSpec)
+        measureChildren(widthMeasureSpec, heightMeasureSpec)
+        val itemView = getChildAt(0)
+        val itemSize = (width - (itemGap * (spanCount - 1))) / spanCount
         when (singleStrategy) {
             Strategy.FILL -> {
                 height = width
             }
             Strategy.CUSTOM -> {
-
+                height = itemView.height
+            }
+            else -> {
+                measureUsualItem(widthMeasureSpec)
+                height = itemSize
             }
         }
         setMeasuredDimension(width, height)
@@ -188,7 +195,6 @@ open class NineGridView @JvmOverloads constructor(
             }
         }
     }
-
 
     private fun measureFourItem(widthMeasureSpec: Int) {
         when (fourStrategy) {
@@ -391,17 +397,13 @@ open class NineGridView @JvmOverloads constructor(
         var itemViewType = adapter.getItemViewType(0)
 
         //要适配单个View的情况
-//        val singleView = adapter.onCreateSingleView(this, itemViewType)
-//        if (singleView != null && adapter.getItemCount() == 1) {
-//            addViewInLayout(
-//                singleView,
-//                0,
-//                createSingleViewLayoutParams(singleView),
-//                true
-//            )
-//            requestLayout()
-//            return
-//        }
+        val singleView = adapter.onCreateSingleView(this, itemViewType)
+        if (singleView != null && adapter.getItemCount() == 1) {
+            val singleViewLayoutParams = createSingleViewLayoutParams(singleView)
+            addViewInLayout(singleView, 0, singleViewLayoutParams, true)
+            requestLayout()
+            return
+        }
 
         //默认itemView的情况
         for (position in 0 until displayCount) {
