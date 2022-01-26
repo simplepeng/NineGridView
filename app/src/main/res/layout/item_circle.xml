@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:layout_constraintHorizontal_chainStyle="spread"
-    android:padding="8dp">
+    android:padding="8dp"
+    app:layout_constraintHorizontal_chainStyle="spread">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ivAvatar"
@@ -55,10 +55,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvNick"
         app:layout_constraintTop_toBottomOf="@id/tvDesc"
-        app:ngv_two_strategy="fill"
         app:ngv_four_strategy="fill"
         app:ngv_itemGap="3dp"
         app:ngv_maxCount="9"
-        app:ngv_spanCount="3" />
+        app:ngv_spanCount="3"
+        app:ngv_three_strategy="bili"
+        app:ngv_two_strategy="fill" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

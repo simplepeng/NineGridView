@@ -19,6 +19,7 @@
         <attr name="ngv_three_strategy">
             <enum name="usual" value="0" />
             <enum name="fill" value="1" />
+            <enum name="bili" value="3" />
         </attr>
 
         <attr name="ngv_four_strategy">

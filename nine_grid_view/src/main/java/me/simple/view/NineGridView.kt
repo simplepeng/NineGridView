@@ -104,12 +104,13 @@ open class NineGridView @JvmOverloads constructor(
                 measureTwoItem(widthMeasureSpec)
             }
             3 -> {
-
+                measureThreeItem(widthMeasureSpec)
             }
             4 -> {
                 measureFourItem(widthMeasureSpec)
             }
             else -> {
+                measureUsualItem(widthMeasureSpec)
             }
         }
 
@@ -128,6 +129,20 @@ open class NineGridView @JvmOverloads constructor(
             val itemView = getChildAt(i)
             itemView.measure(childMeasureSpec, childMeasureSpec)
         }
+
+        setMeasuredDimension(width, height)
+    }
+
+    //
+    private fun measureItemFill(
+        widthMeasureSpec: Int,
+        lineCount: Int
+    ) {
+        val width = MeasureSpec.getSize(widthMeasureSpec)
+        val itemSize = (width - itemGap) / 2
+        val childMeasureSpec = MeasureSpec.makeMeasureSpec(itemSize, MeasureSpec.EXACTLY)
+        measureChildren(childMeasureSpec, childMeasureSpec)
+        val height = itemSize * lineCount + ((lineCount - 1) * itemGap)
 
         setMeasuredDimension(width, height)
     }
@@ -162,18 +177,18 @@ open class NineGridView @JvmOverloads constructor(
         }
     }
 
-    private fun measureItemFill(
-        widthMeasureSpec: Int,
-        lineCount: Int
-    ) {
-        val width = MeasureSpec.getSize(widthMeasureSpec)
-        val itemSize = (width - itemGap) / 2
-        val childMeasureSpec = MeasureSpec.makeMeasureSpec(itemSize, MeasureSpec.EXACTLY)
-        measureChildren(childMeasureSpec, childMeasureSpec)
-        val height = itemSize * lineCount + ((lineCount - 1) * itemGap)
-
-        setMeasuredDimension(width, height)
+    //测量三个Item
+    private fun measureThreeItem(widthMeasureSpec: Int) {
+        when (threeStrategy) {
+            Strategy.FILL -> {
+                measureItemFill(widthMeasureSpec, 2)
+            }
+            else -> {
+                measureUsualItem(widthMeasureSpec)
+            }
+        }
     }
+
 
     private fun measureFourItem(widthMeasureSpec: Int) {
         when (fourStrategy) {
@@ -205,14 +220,17 @@ open class NineGridView @JvmOverloads constructor(
             1 -> {
                 layoutSingleItem()
             }
-            2, 3 -> {
+            2 -> {
                 layoutTwoItem()
+            }
+            3 -> {
+                layoutThreeItem()
             }
             4 -> {
                 layoutFourItem()
             }
             else -> {
-//                layoutUsualItem()
+                layoutUsualItem2(spanCount)
             }
         }
 
@@ -258,6 +276,18 @@ open class NineGridView @JvmOverloads constructor(
 
     private fun layoutTwoItem() {
         layoutUsualItem2(spanCount)
+    }
+
+    private fun layoutThreeItem() {
+        when (threeStrategy) {
+            Strategy.FILL, Strategy.BILI -> {
+                layoutUsualItem2(2)
+            }
+            else -> {
+                layoutUsualItem2(spanCount)
+            }
+        }
+
     }
 
     private fun layoutUsualItem2(skipLinePosition: Int) {
