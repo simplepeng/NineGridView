@@ -34,6 +34,9 @@ open class NineGridView @JvmOverloads constructor(
     //三个item时的适配策略
     var fourStrategy: Int = Strategy.USUAL
 
+    //额外布局是否显示
+    var extraStrategy: Int = Strategy.SHOW
+
     //适配器
     var adapter: Adapter? = null
         set(value) {
@@ -74,6 +77,10 @@ open class NineGridView @JvmOverloads constructor(
             fourStrategy = typedArray.getInt(
                 R.styleable.NineGridView_ngv_four_strategy,
                 Strategy.USUAL
+            )
+            extraStrategy = typedArray.getInt(
+                R.styleable.NineGridView_ngv_extra_strategy,
+                Strategy.SHOW
             )
 
             typedArray.recycle()
@@ -239,6 +246,7 @@ open class NineGridView @JvmOverloads constructor(
                 layoutUsualItem2(spanCount)
             }
         }
+        layoutExtraView()
 
         //绑定数据
         post {
@@ -280,6 +288,7 @@ open class NineGridView @JvmOverloads constructor(
         }
     }
 
+    //
     private fun layoutTwoItem() {
         layoutUsualItem2(spanCount)
     }
@@ -372,18 +381,19 @@ open class NineGridView @JvmOverloads constructor(
 //    }
 
     //需要添加额外itemView的情况
-//    private fun layoutExtraView() {
-//        if (adapter == null) return
-//        if (adapter!!.enableExtraView() && adapter!!.getItemCount() > maxCount) {
-//            val extraView = getChildAt(childCount - 1)
-//            right = width
-//            left = right - extraView.measuredWidth
-//            bottom = height
-//            top = bottom - extraView.measuredWidth
-//            extraView.layout(left, top, right, bottom)
-//        }
-//    }
+    private fun layoutExtraView() {
+        if (adapter == null) return
+        if (extraStrategy == Strategy.SHOW && adapter!!.getItemCount() > maxCount) {
+            val extraView = getChildAt(childCount - 1)
+            right = width
+            left = right - extraView.measuredWidth
+            bottom = height
+            top = bottom - extraView.measuredWidth
+            extraView.layout(left, top, right, bottom)
+        }
+    }
 
+    //
     private fun addViews() {
         removeAllViewsInLayout()
 
@@ -416,16 +426,13 @@ open class NineGridView @JvmOverloads constructor(
         }
 
         //添加额外的itemView
-//        itemViewType = adapter.getItemViewType(displayCount)
-//        val extraView = adapter.onCreateExtraView(this, itemViewType)
-//        if (adapter.enableExtraView() && extraView != null && adapter.getItemCount() > maxCount) {
-//            addViewInLayout(
-//                extraView,
-//                displayCount,
-//                createItemViewLayoutParams(ItemViewLayoutParams.TYPE_EXTRA_VIEW),
-//                true
-//            )
-//        }
+        itemViewType = adapter.getItemViewType(displayCount)
+        val extraView = adapter.onCreateExtraView(this, itemViewType)
+        if (extraStrategy == Strategy.SHOW && extraView != null && adapter.getItemCount() > maxCount) {
+            val extraViewLayoutParams =
+                createItemViewLayoutParams(ItemViewLayoutParams.TYPE_EXTRA_VIEW)
+            addViewInLayout(extraView, displayCount, extraViewLayoutParams, true)
+        }
 
         //
         requestLayout()
