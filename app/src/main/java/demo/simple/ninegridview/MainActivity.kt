@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
     private fun createImages(): List<String> {
         val images = mutableListOf<String>()
 //        var randomCount = Random().nextInt(mImages.size)
-//        randomCount = 1
+//        val randomCount = 3
         val randomCount = createImageCount()
         for (i in 0 until randomCount) {
             val index = Random().nextInt(mImages.size)

@@ -174,7 +174,7 @@ open class NineGridView @JvmOverloads constructor(
     private fun measureThreeItem(widthMeasureSpec: Int) {
         when (threeStrategy) {
             Strategy.FILL -> {
-                measureItem(widthMeasureSpec, 2, 2)
+                measureItem(widthMeasureSpec, spanCount, 1)
             }
             Strategy.BILI -> {
                 measureItem(widthMeasureSpec, spanCount, 2)
@@ -191,8 +191,11 @@ open class NineGridView @JvmOverloads constructor(
             Strategy.FILL -> {
                 measureItem(widthMeasureSpec, 2, 2)
             }
-            else -> {
+            Strategy.BILI -> {
                 measureItem(widthMeasureSpec, spanCount, 2)
+            }
+            else -> {//usual
+                measureItem(widthMeasureSpec, spanCount, getLineCount())
             }
         }
     }
@@ -298,8 +301,8 @@ open class NineGridView @JvmOverloads constructor(
     //布局三个item的情况
     private fun layoutThreeItem() {
         when (threeStrategy) {
-            Strategy.FILL, Strategy.BILI -> {
-                layoutItem(spanCount - 1)
+            Strategy.BILI -> {
+                layoutItem(2)
             }
             else -> {
                 layoutItem(spanCount)
@@ -311,7 +314,7 @@ open class NineGridView @JvmOverloads constructor(
     private fun layoutFourItem() {
         when (fourStrategy) {
             Strategy.BILI, Strategy.FILL -> {
-                layoutItem(spanCount - 1)
+                layoutItem(2)
             }
             else -> {
                 layoutItem(spanCount)
