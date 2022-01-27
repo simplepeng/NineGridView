@@ -58,7 +58,7 @@
         app:ngv_extra_strategy="show"
         app:ngv_four_strategy="usual"
         app:ngv_itemGap="2dp"
-        app:ngv_single_strategy="fill"
+        app:ngv_single_strategy="usual"
         app:ngv_spanCount="3"
         app:ngv_three_strategy="usual"
         app:ngv_two_strategy="usual" />

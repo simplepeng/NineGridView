@@ -237,7 +237,7 @@ open class NineGridView @JvmOverloads constructor(
         }
     }
 
-    //
+    //布局
     private fun layoutChildren() {
         if (adapter == null) return
 
@@ -353,7 +353,7 @@ open class NineGridView @JvmOverloads constructor(
 
         //要适配单个View的情况
         val singleView = adapter.onCreateSingleView(this, itemViewType)
-        if (singleView != null && adapter.getItemCount() == 1) {
+        if (singleStrategy == Strategy.CUSTOM && singleView != null && adapter.getItemCount() == 1) {
             val singleViewLayoutParams = createSingleViewLayoutParams(singleView)
             addViewInLayout(singleView, 0, singleViewLayoutParams, true)
             requestLayout()
@@ -384,9 +384,7 @@ open class NineGridView @JvmOverloads constructor(
         requestLayout()
     }
 
-    /**
-     * 创建itemView的LayoutParams
-     */
+    //创建itemView的LayoutParams
     private fun createSingleViewLayoutParams(singleView: View): LayoutParams {
         val layoutParams = ItemViewLayoutParams(
             LayoutParams.MATCH_PARENT,
@@ -400,9 +398,7 @@ open class NineGridView @JvmOverloads constructor(
         return layoutParams
     }
 
-    /**
-     * 创建itemView的LayoutParams
-     */
+    //创建itemView的LayoutParams
     private fun createItemViewLayoutParams(type: Int): LayoutParams {
         val itemViewLayoutParams = ItemViewLayoutParams(
             LayoutParams.MATCH_PARENT,

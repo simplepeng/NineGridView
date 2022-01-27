@@ -102,8 +102,8 @@ class MainActivity : AppCompatActivity() {
     private fun createImages(): List<String> {
         val images = mutableListOf<String>()
 //        var randomCount = Random().nextInt(mImages.size)
-        val randomCount = 1
-//        val randomCount = createImageCount()
+//        val randomCount = 1
+        val randomCount = createImageCount()
         for (i in 0 until randomCount) {
             val index = Random().nextInt(mImages.size)
             images.add(mImages[index])
@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
             holder.tvDesc.text = item.text
             holder.tvNum.text = item.images.size.toString()
 
-            holder.nineGridView.adapter = CustomAdapter(item.images)
+//            holder.nineGridView.adapter = CustomAdapter(item.images)
 
             val imageAdapter = ImageAdapter(item.images, onBindView = { imageView, item, position ->
                 Glide.with(imageView)
@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
             imageAdapter.onExtraViewClick = { position ->
                 toast("ExtraView click  $position")
             }
-//            holder.nineGridView.adapter = imageAdapter
+            holder.nineGridView.adapter = imageAdapter
         }
     }
 
