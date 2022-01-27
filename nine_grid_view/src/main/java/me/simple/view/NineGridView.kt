@@ -2,7 +2,6 @@ package me.simple.view
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import kotlin.math.ceil
@@ -204,15 +203,40 @@ open class NineGridView @JvmOverloads constructor(
 
     override fun onFinishInflate() {
         super.onFinishInflate()
+        //布局预览模式
         if (isInEditMode) {
             adapter = InEditModeAdapter(maxCount)
+        }
+    }
+
+    //绑定数据
+    private fun performBind() {
+        if (adapter == null) return
+        post {
+            for (index in 0 until childCount) {
+                val child = getChildAt(index)
+
+                if (child.layoutParams is ItemViewLayoutParams) {
+                    val lp = child.layoutParams as ItemViewLayoutParams
+                    when (lp.type) {
+                        ItemViewLayoutParams.TYPE_ITEM_VIEW -> {
+                            adapter!!.onBindItemView(child, index)
+                        }
+                        ItemViewLayoutParams.TYPE_EXTRA_VIEW -> {
+                            adapter!!.onBindExtraView(child, index)
+                        }
+                        ItemViewLayoutParams.TYPE_SINGLE_VIEW -> {
+                            adapter!!.onBindSingleView(child, index)
+                        }
+                    }
+                }
+            }
         }
     }
 
     //
     private fun layoutChildren() {
         if (adapter == null) return
-        val adapter = adapter!!
 
         when (childCount) {
             1 -> {
@@ -228,59 +252,16 @@ open class NineGridView @JvmOverloads constructor(
                 layoutFourItem()
             }
             else -> {
-                layoutUsualItem2(spanCount)
+                layoutItem(spanCount)
                 layoutExtraView()
             }
         }
 
-        //绑定数据
-        post {
-            for (index in 0 until childCount) {
-                val child = getChildAt(index)
-
-                if (child.layoutParams is ItemViewLayoutParams) {
-                    val lp = child.layoutParams as ItemViewLayoutParams
-                    when (lp.type) {
-                        ItemViewLayoutParams.TYPE_ITEM_VIEW -> {
-                            adapter.onBindItemView(child, index)
-                        }
-                        ItemViewLayoutParams.TYPE_EXTRA_VIEW -> {
-                            adapter.onBindExtraView(child, index)
-                        }
-                        ItemViewLayoutParams.TYPE_SINGLE_VIEW -> {
-                            adapter.onBindSingleView(child, index)
-                        }
-                    }
-                }
-            }
-        }
+        performBind()
     }
 
-    //布局一个item的情况
-    private fun layoutSingleItem() {
-        val singleView = getChildAt(0)
-        singleView.layout(0, 0, singleView.measuredWidth, singleView.measuredHeight)
-    }
-
-    //
-    private fun layoutTwoItem() {
-        layoutUsualItem2(spanCount)
-    }
-
-    private fun layoutThreeItem() {
-        when (threeStrategy) {
-            Strategy.FILL, Strategy.BILI -> {
-                layoutUsualItem2(2)
-            }
-            else -> {
-                layoutUsualItem2(spanCount)
-            }
-        }
-
-    }
-
-    private fun layoutUsualItem2(skipLinePosition: Int) {
-
+    //布局item
+    private fun layoutItem(skipLinePosition: Int) {
         var left = 0
         var top = 0
         var right = 0
@@ -294,7 +275,7 @@ open class NineGridView @JvmOverloads constructor(
 
             itemView.layout(left, top, right, bottom)
 
-            if ((i + 1) % skipLinePosition == 0) {//
+            if ((i + 1) % skipLinePosition == 0) {//换行
                 left = 0
                 top = bottom + itemGap
             } else {
@@ -303,25 +284,39 @@ open class NineGridView @JvmOverloads constructor(
         }
     }
 
-    private fun layoutFourItem() {
-        var left = 0
-        var top = 0
-        var right = 0
-        var bottom = 0
+    //布局一个item的情况
+    private fun layoutSingleItem() {
+        val singleView = getChildAt(0)
+        singleView.layout(0, 0, singleView.measuredWidth, singleView.measuredHeight)
+    }
 
-        when (fourStrategy) {
-            Strategy.BILI -> {
-                layoutUsualItem2(2)
-            }
-            Strategy.FILL -> {
-                layoutUsualItem2(2)
+    //布局两个item的情况
+    private fun layoutTwoItem() {
+        layoutItem(spanCount)
+    }
+
+    //布局三个item的情况
+    private fun layoutThreeItem() {
+        when (threeStrategy) {
+            Strategy.FILL, Strategy.BILI -> {
+                layoutItem(spanCount - 1)
             }
             else -> {
-                layoutUsualItem2(spanCount)
+                layoutItem(spanCount)
             }
         }
+    }
 
-
+    //布局四个item的情况
+    private fun layoutFourItem() {
+        when (fourStrategy) {
+            Strategy.BILI, Strategy.FILL -> {
+                layoutItem(spanCount - 1)
+            }
+            else -> {
+                layoutItem(spanCount)
+            }
+        }
     }
 
     //需要添加额外itemView的情况
@@ -329,10 +324,13 @@ open class NineGridView @JvmOverloads constructor(
         if (adapter == null) return
         if (extraStrategy == Strategy.SHOW && adapter!!.getItemCount() > maxCount) {
             val extraView = getChildAt(childCount - 1)
-            val right = width
-            val left = right - extraView.measuredWidth
-            val bottom = height
-            val top = bottom - extraView.measuredHeight
+            val lastView = getChildAt(childCount - 2)
+
+            val left = lastView.left
+            val top = lastView.top
+            val right = lastView.right
+            val bottom = lastView.bottom
+
             extraView.layout(left, top, right, bottom)
         }
     }

@@ -91,10 +91,19 @@ class MainActivity : AppCompatActivity() {
         return items
     }
 
+    private var imageCount = 0
+
+    private fun createImageCount(): Int {
+        if (imageCount > 11) imageCount = 0
+        imageCount++
+        return imageCount
+    }
+
     private fun createImages(): List<String> {
         val images = mutableListOf<String>()
-        var randomCount = Random().nextInt(mImages.size)
-        randomCount = 9
+//        var randomCount = Random().nextInt(mImages.size)
+//        randomCount = 1
+        val randomCount = createImageCount()
         for (i in 0 until randomCount) {
             val index = Random().nextInt(mImages.size)
             images.add(mImages[index])
