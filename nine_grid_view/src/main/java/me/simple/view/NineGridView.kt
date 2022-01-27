@@ -107,7 +107,7 @@ open class NineGridView @JvmOverloads constructor(
                 measureFourItem(widthMeasureSpec)
             }
             else -> {
-                measureUsualItem(widthMeasureSpec)
+                measureItem(widthMeasureSpec, spanCount, getLineCount())
             }
         }
 
@@ -256,9 +256,9 @@ open class NineGridView @JvmOverloads constructor(
             }
             else -> {
                 layoutUsualItem2(spanCount)
+                layoutExtraView()
             }
         }
-        layoutExtraView()
 
         //绑定数据
         post {
@@ -367,10 +367,10 @@ open class NineGridView @JvmOverloads constructor(
         if (adapter == null) return
         if (extraStrategy == Strategy.SHOW && adapter!!.getItemCount() > maxCount) {
             val extraView = getChildAt(childCount - 1)
-            right = width
-            left = right - extraView.measuredWidth
-            bottom = height
-            top = bottom - extraView.measuredWidth
+            val right = width
+            val left = right - extraView.measuredWidth
+            val bottom = height
+            val top = bottom - extraView.measuredWidth
             extraView.layout(left, top, right, bottom)
         }
     }
