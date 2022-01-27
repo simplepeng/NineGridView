@@ -88,8 +88,8 @@ open class NineGridView @JvmOverloads constructor(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        if (adapter == null || adapter!!.getItemCount() == 0) {
-            super.onMeasure(widthMeasureSpec, 0)
+        if (adapter == null || adapter?.getItemCount() == 0) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
             return
         }
 
@@ -123,7 +123,7 @@ open class NineGridView @JvmOverloads constructor(
 
     }
 
-    //测量常规类型的Item
+    //测量常规类型的item
     private fun measureUsualItem(widthMeasureSpec: Int) {
         val lineCount = getLineCount()
         val width = MeasureSpec.getSize(widthMeasureSpec)
@@ -140,7 +140,7 @@ open class NineGridView @JvmOverloads constructor(
         setMeasuredDimension(width, height)
     }
 
-    //
+    //测量填充型的item
     private fun measureItemFill(
         widthMeasureSpec: Int,
         lineCount: Int
@@ -160,16 +160,18 @@ open class NineGridView @JvmOverloads constructor(
         heightMeasureSpec: Int
     ) {
         val width = MeasureSpec.getSize(widthMeasureSpec)
-        var height = MeasureSpec.getSize(heightMeasureSpec)
+        var height = 0
         measureChildren(widthMeasureSpec, heightMeasureSpec)
+
         val itemView = getChildAt(0)
+//        itemView.measure(widthMeasureSpec, heightMeasureSpec)
         val itemSize = (width - (itemGap * (spanCount - 1))) / spanCount
         when (singleStrategy) {
             Strategy.FILL -> {
                 height = width
             }
             Strategy.CUSTOM -> {
-                height = itemView.height
+                height = itemView.measuredHeight
             }
             else -> {
                 measureUsualItem(widthMeasureSpec)
@@ -283,7 +285,7 @@ open class NineGridView @JvmOverloads constructor(
                 singleView.layout(0, 0, width, width)
             }
             Strategy.CUSTOM -> {
-                singleView.layout(0, 0, singleView.measuredWidth, measuredHeight)
+                singleView.layout(0, 0, singleView.measuredWidth, singleView.measuredHeight)
             }
         }
     }
@@ -442,13 +444,16 @@ open class NineGridView @JvmOverloads constructor(
      * 创建itemView的LayoutParams
      */
     private fun createSingleViewLayoutParams(singleView: View): LayoutParams {
-        return if (singleStrategy == Strategy.CUSTOM) {
-            singleView.layoutParams
-        } else {
-            ItemViewLayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT).apply {
-                type = ItemViewLayoutParams.TYPE_SINGLE_VIEW
-            }
+        val layoutParams = ItemViewLayoutParams(
+            LayoutParams.MATCH_PARENT,
+            LayoutParams.MATCH_PARENT
+        )
+        layoutParams.type = ItemViewLayoutParams.TYPE_SINGLE_VIEW
+        if (singleStrategy == Strategy.CUSTOM) {
+            layoutParams.width = singleView.layoutParams.width
+            layoutParams.height = singleView.layoutParams.height
         }
+        return layoutParams
     }
 
     /**
