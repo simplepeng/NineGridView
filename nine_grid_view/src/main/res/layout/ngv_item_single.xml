@@ -3,5 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/imageView"
     android:layout_width="300dp"
-    android:layout_height="300dp"
+    android:layout_height="350dp"
+    android:scaleType="centerCrop"
+    tools:background="@android:color/background_dark"
     tools:ignore="ContentDescription" />

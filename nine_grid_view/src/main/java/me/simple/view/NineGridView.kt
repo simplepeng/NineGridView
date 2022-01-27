@@ -93,16 +93,6 @@ open class NineGridView @JvmOverloads constructor(
             return
         }
 
-        //测量单个itemView的情况
-//        if (singleStrategy == Strategy.USUAL && adapter.getItemCount() == 1) {
-//            measureChildren(widthMeasureSpec, heightMeasureSpec)
-//            val adaptHeightMeasureSpec =
-//                MeasureSpec.makeMeasureSpec(getChildAt(0).measuredHeight, MeasureSpec.EXACTLY)
-//            super.onMeasure(widthMeasureSpec, adaptHeightMeasureSpec)
-//            return
-//        }
-
-//        measureChildren(widthMeasureSpec, heightMeasureSpec)
         when (adapter!!.getItemCount()) {
             1 -> {
                 measureSingleItem(widthMeasureSpec, heightMeasureSpec)
@@ -122,6 +112,12 @@ open class NineGridView @JvmOverloads constructor(
         }
 
     }
+
+    //获取item的大小
+    private fun getItemSize(
+        widthMeasureSpec: Int,
+        itemCount: Int = this.spanCount
+    ) = (MeasureSpec.getSize(widthMeasureSpec) - (itemGap * (itemCount - 1))) / itemCount
 
     //测量常规类型的item
     private fun measureUsualItem(widthMeasureSpec: Int) {
@@ -154,28 +150,38 @@ open class NineGridView @JvmOverloads constructor(
         setMeasuredDimension(width, height)
     }
 
+    //
+    private fun measureItem(
+        widthMeasureSpec: Int,
+        itemCount: Int,
+        lineCount: Int
+    ) {
+        val itemSize = getItemSize(widthMeasureSpec, itemCount)
+        val width = MeasureSpec.getSize(widthMeasureSpec)
+        val height = itemSize * lineCount + ((lineCount - 1) * itemGap)
+        val childMeasureSpec = MeasureSpec.makeMeasureSpec(itemSize, MeasureSpec.EXACTLY)
+        measureChildren(childMeasureSpec, childMeasureSpec)
+        setMeasuredDimension(width, height)
+    }
+
     //测量单个Item
     private fun measureSingleItem(
         widthMeasureSpec: Int,
         heightMeasureSpec: Int
     ) {
-        val width = MeasureSpec.getSize(widthMeasureSpec)
-        var height = 0
         measureChildren(widthMeasureSpec, heightMeasureSpec)
 
-        val itemView = getChildAt(0)
-//        itemView.measure(widthMeasureSpec, heightMeasureSpec)
-        val itemSize = (width - (itemGap * (spanCount - 1))) / spanCount
-        when (singleStrategy) {
+        val width = MeasureSpec.getSize(widthMeasureSpec)
+        val height = when (singleStrategy) {
             Strategy.FILL -> {
-                height = width
+                width
             }
             Strategy.CUSTOM -> {
-                height = itemView.measuredHeight
+                getChildAt(0).measuredHeight
             }
             else -> {
                 measureUsualItem(widthMeasureSpec)
-                height = itemSize
+                getItemSize(spanCount)
             }
         }
         setMeasuredDimension(width, height)
@@ -185,10 +191,10 @@ open class NineGridView @JvmOverloads constructor(
     private fun measureTwoItem(widthMeasureSpec: Int) {
         when (twoStrategy) {
             Strategy.FILL -> {
-                measureItemFill(widthMeasureSpec, 1)
+                measureItem(widthMeasureSpec, 2, 1)
             }
             else -> {
-                measureUsualItem(widthMeasureSpec)
+                measureItem(widthMeasureSpec, spanCount, 1)
             }
         }
     }
@@ -205,6 +211,7 @@ open class NineGridView @JvmOverloads constructor(
         }
     }
 
+    //测量四个Item
     private fun measureFourItem(widthMeasureSpec: Int) {
         when (fourStrategy) {
             Strategy.FILL -> {
@@ -352,36 +359,6 @@ open class NineGridView @JvmOverloads constructor(
 
     }
 
-//    private fun layoutUsualItem() {
-//        val adapter = adapter ?: return
-//
-//        var left = 0
-//        var top = 0
-//        var right = 0
-//        var bottom = 0
-//
-//        val displayCount = getDisplayCount()
-//        for (i in 0 until displayCount) {
-//            val child = getChildAt(i)
-//            right = left + child.measuredWidth
-//            bottom = top + child.measuredWidth
-//
-//            child.layout(left, top, right, bottom)
-//            if (isInEditMode) {
-//                adapter.onBindItemView(child, i)
-//            }
-//
-////            val skipPosition =
-////                if (adapter.adaptFourItem() && displayCount == 4) 2 else spanCount
-////            if ((i + 1) % skipPosition == 0) {//
-////                left = 0
-////                top = bottom + itemGap
-////            } else {
-////                left = right + itemGap
-////            }
-//        }
-//    }
-
     //需要添加额外itemView的情况
     private fun layoutExtraView() {
         if (adapter == null) return
@@ -395,7 +372,7 @@ open class NineGridView @JvmOverloads constructor(
         }
     }
 
-    //
+    //添加views
     private fun addViews() {
         removeAllViewsInLayout()
 
@@ -492,6 +469,7 @@ open class NineGridView @JvmOverloads constructor(
         return ceil(getDisplayCount().toDouble() / spanCount).toInt()
     }
 
+    //适配器
     abstract class Adapter {
 
         // 返回总的item数量
