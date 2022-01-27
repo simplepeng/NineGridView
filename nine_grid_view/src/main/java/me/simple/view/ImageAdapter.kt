@@ -17,9 +17,6 @@ open class ImageAdapter<T>(
     //
     override fun getItemCount() = items?.size ?: 0
 
-    //是否适配4个ImageView
-//    override fun adaptFourItem() = true
-
     //
     override fun onCreateItemView(parent: ViewGroup, viewType: Int): View {
         return LayoutInflater.from(parent.context).inflate(R.layout.ngv_item_image, parent, false)
@@ -34,9 +31,7 @@ open class ImageAdapter<T>(
         this.onBindView?.invoke(itemView as ImageView, item, position)
     }
 
-    //适配单个ImageView
-//    override fun adaptSingleView() = true
-
+    //
     override fun onCreateSingleView(parent: ViewGroup, viewType: Int): View? {
         return LayoutInflater.from(parent.context).inflate(R.layout.ngv_item_single, parent, false)
     }
@@ -50,9 +45,7 @@ open class ImageAdapter<T>(
         this.onBindView?.invoke(singleView as ImageView, item, position)
     }
 
-    //是否适配显示额外的
-//    override fun enableExtraView() = true
-
+    //
     override fun onCreateExtraView(parent: ViewGroup, viewType: Int): View? {
         return LayoutInflater.from(parent.context).inflate(R.layout.ngv_item_extra, parent, false)
     }

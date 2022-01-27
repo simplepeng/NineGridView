@@ -19,7 +19,7 @@ internal class InEditModeAdapter(
     }
 
     override fun onBindItemView(itemView: View, position: Int) {
-        val tvItem = itemView.findViewById<TextView>(R.id.tvItem)
-        tvItem.text = String.format("item %s", position)
+//        val tvItem = itemView.findViewById<TextView>(R.id.tvItem)
+//        tvItem.text = String.format("item %s", position)
     }
 }

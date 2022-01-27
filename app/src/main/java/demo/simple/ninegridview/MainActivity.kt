@@ -102,8 +102,8 @@ class MainActivity : AppCompatActivity() {
     private fun createImages(): List<String> {
         val images = mutableListOf<String>()
 //        var randomCount = Random().nextInt(mImages.size)
-//        val randomCount = 3
-        val randomCount = createImageCount()
+        val randomCount = 1
+//        val randomCount = createImageCount()
         for (i in 0 until randomCount) {
             val index = Random().nextInt(mImages.size)
             images.add(mImages[index])
@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
             holder.tvDesc.text = item.text
             holder.tvNum.text = item.images.size.toString()
 
-//            holder.nineGridView.adapter = Adapter(item.images)
+            holder.nineGridView.adapter = CustomAdapter(item.images)
 
             val imageAdapter = ImageAdapter(item.images, onBindView = { imageView, item, position ->
                 Glide.with(imageView)
@@ -149,16 +149,12 @@ class MainActivity : AppCompatActivity() {
             })
             imageAdapter.onItemViewClick = { url, position ->
                 toast("ItemView click -- $position")
-//                previewImage(item)
                 previewImage(item.images, position)
             }
             imageAdapter.onExtraViewClick = { position ->
                 toast("ExtraView click  $position")
             }
-
-            holder.nineGridView.apply {
-                adapter = imageAdapter
-            }
+//            holder.nineGridView.adapter = imageAdapter
         }
     }
 
@@ -181,12 +177,13 @@ class MainActivity : AppCompatActivity() {
         }.show().setCurrentPosition(position)
     }
 
-    inner class Adapter(
+    inner class CustomAdapter(
         private val items: List<String>
     ) : NineGridView.Adapter() {
 
         override fun getItemCount() = items.size
 
+        //
         override fun onCreateItemView(parent: ViewGroup, viewType: Int): View {
             return LayoutInflater.from(parent.context).inflate(R.layout.item_image, parent, false)
         }
@@ -195,12 +192,15 @@ class MainActivity : AppCompatActivity() {
             val imageView = itemView.findViewById<ImageView>(R.id.imageView)
             Glide.with(itemView)
                 .load(items[position])
+                .centerCrop()
+                .placeholder(R.drawable.sp_loading)
                 .into(imageView)
             itemView.setOnClickListener {
-                toast("itemView click")
+                previewImage(items, position)
             }
         }
 
+        //
         override fun onCreateSingleView(parent: ViewGroup, viewType: Int): View? {
             return LayoutInflater.from(parent.context).inflate(R.layout.item_single, parent, false)
         }
@@ -209,12 +209,15 @@ class MainActivity : AppCompatActivity() {
             val imageView = singleView.findViewById<ImageView>(R.id.imageView)
             Glide.with(singleView)
                 .load(items[position])
+                .centerCrop()
+                .placeholder(R.drawable.sp_loading)
                 .into(imageView)
             singleView.setOnClickListener {
-                toast("singleView click")
+                previewImage(items, position)
             }
         }
 
+        //
         override fun onCreateExtraView(parent: ViewGroup, viewType: Int): View? {
             return LayoutInflater.from(parent.context).inflate(R.layout.item_extra, parent, false)
         }
