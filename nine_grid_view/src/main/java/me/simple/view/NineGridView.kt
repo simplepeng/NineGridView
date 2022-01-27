@@ -44,6 +44,7 @@ open class NineGridView @JvmOverloads constructor(
             addViews()
         }
 
+    //适配策略模式
     object Strategy {
         const val USUAL = 0//常规的
         const val FILL = 1//填充宽度的
@@ -119,38 +120,7 @@ open class NineGridView @JvmOverloads constructor(
         itemCount: Int = this.spanCount
     ) = (MeasureSpec.getSize(widthMeasureSpec) - (itemGap * (itemCount - 1))) / itemCount
 
-    //测量常规类型的item
-    private fun measureUsualItem(widthMeasureSpec: Int) {
-        val lineCount = getLineCount()
-        val width = MeasureSpec.getSize(widthMeasureSpec)
-        val height = width / spanCount * lineCount
-
-        val itemSize = (width - (itemGap * (spanCount - 1))) / spanCount
-        val childMeasureSpec = MeasureSpec.makeMeasureSpec(itemSize, MeasureSpec.EXACTLY)
-//        measureChildren(widthMeasureSpec, widthMeasureSpec)
-        for (i in 0 until childCount) {
-            val itemView = getChildAt(i)
-            itemView.measure(childMeasureSpec, childMeasureSpec)
-        }
-
-        setMeasuredDimension(width, height)
-    }
-
-    //测量填充型的item
-    private fun measureItemFill(
-        widthMeasureSpec: Int,
-        lineCount: Int
-    ) {
-        val width = MeasureSpec.getSize(widthMeasureSpec)
-        val itemSize = (width - itemGap) / 2
-        val childMeasureSpec = MeasureSpec.makeMeasureSpec(itemSize, MeasureSpec.EXACTLY)
-        measureChildren(childMeasureSpec, childMeasureSpec)
-        val height = itemSize * lineCount + ((lineCount - 1) * itemGap)
-
-        setMeasuredDimension(width, height)
-    }
-
-    //
+    //测量item
     private fun measureItem(
         widthMeasureSpec: Int,
         itemCount: Int,
@@ -169,19 +139,21 @@ open class NineGridView @JvmOverloads constructor(
         widthMeasureSpec: Int,
         heightMeasureSpec: Int
     ) {
-        measureChildren(widthMeasureSpec, heightMeasureSpec)
-
         val width = MeasureSpec.getSize(widthMeasureSpec)
         val height = when (singleStrategy) {
             Strategy.FILL -> {
+                measureChildren(widthMeasureSpec, widthMeasureSpec)
                 width
             }
             Strategy.CUSTOM -> {
+                measureChildren(widthMeasureSpec, heightMeasureSpec)
                 getChildAt(0).measuredHeight
             }
             else -> {
-                measureUsualItem(widthMeasureSpec)
-                getItemSize(spanCount)
+                val itemsSize = getItemSize(widthMeasureSpec, spanCount)
+                val itemMeasureSpec = MeasureSpec.makeMeasureSpec(itemsSize, MeasureSpec.EXACTLY)
+                measureChildren(itemMeasureSpec, itemMeasureSpec)
+                itemsSize
             }
         }
         setMeasuredDimension(width, height)
@@ -237,6 +209,7 @@ open class NineGridView @JvmOverloads constructor(
         }
     }
 
+    //
     private fun layoutChildren() {
         if (adapter == null) return
         val adapter = adapter!!
@@ -286,18 +259,7 @@ open class NineGridView @JvmOverloads constructor(
     //布局一个item的情况
     private fun layoutSingleItem() {
         val singleView = getChildAt(0)
-        when (singleStrategy) {
-            Strategy.USUAL -> {
-                val itemSize = width / spanCount
-                singleView.layout(0, 0, itemSize, itemSize)
-            }
-            Strategy.FILL -> {
-                singleView.layout(0, 0, width, width)
-            }
-            Strategy.CUSTOM -> {
-                singleView.layout(0, 0, singleView.measuredWidth, singleView.measuredHeight)
-            }
-        }
+        singleView.layout(0, 0, singleView.measuredWidth, singleView.measuredHeight)
     }
 
     //
@@ -370,7 +332,7 @@ open class NineGridView @JvmOverloads constructor(
             val right = width
             val left = right - extraView.measuredWidth
             val bottom = height
-            val top = bottom - extraView.measuredWidth
+            val top = bottom - extraView.measuredHeight
             extraView.layout(left, top, right, bottom)
         }
     }
@@ -408,12 +370,13 @@ open class NineGridView @JvmOverloads constructor(
         }
 
         //添加额外的itemView
-        itemViewType = adapter.getItemViewType(displayCount)
-        val extraView = adapter.onCreateExtraView(this, itemViewType)
-        if (extraStrategy == Strategy.SHOW && extraView != null && adapter.getItemCount() > maxCount) {
-            val extraViewLayoutParams =
-                createItemViewLayoutParams(ItemViewLayoutParams.TYPE_EXTRA_VIEW)
-            addViewInLayout(extraView, displayCount, extraViewLayoutParams, true)
+        if (adapter.getItemCount() > maxCount) {
+            itemViewType = adapter.getItemViewType(displayCount)
+            val extraView = adapter.onCreateExtraView(this, itemViewType)
+            if (extraStrategy == Strategy.SHOW && extraView != null) {
+                val layoutParams = createItemViewLayoutParams(ItemViewLayoutParams.TYPE_EXTRA_VIEW)
+                addViewInLayout(extraView, displayCount, layoutParams, true)
+            }
         }
 
         //
@@ -440,8 +403,10 @@ open class NineGridView @JvmOverloads constructor(
      * 创建itemView的LayoutParams
      */
     private fun createItemViewLayoutParams(type: Int): LayoutParams {
-        val itemViewLayoutParams =
-            ItemViewLayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        val itemViewLayoutParams = ItemViewLayoutParams(
+            LayoutParams.MATCH_PARENT,
+            LayoutParams.MATCH_PARENT
+        )
         itemViewLayoutParams.type = type
         return itemViewLayoutParams
     }
@@ -479,29 +444,21 @@ open class NineGridView @JvmOverloads constructor(
         abstract fun getItemCount(): Int
 
         //分发各种不同itemType，类似RecyclerView
-        fun getItemViewType(position: Int) = 0
-
-        //适配4个itemView的样式-类似哔哩哔哩
-//        open fun adaptFourItem(): Boolean = false
+        open fun getItemViewType(position: Int) = 0
 
         //默认的ItemView样式
         abstract fun onCreateItemView(parent: ViewGroup, viewType: Int): View
 
         abstract fun onBindItemView(itemView: View, position: Int)
 
-        //是否适配单个ItemView的样式
-//        @Deprecated("")
-//        open fun adaptSingleView(): Boolean = false
-
+        //自定义单个item样式
         open fun onCreateSingleView(parent: ViewGroup, viewType: Int): View? = null
 
         open fun onBindSingleView(singleView: View, position: Int) {
 
         }
 
-        //是否适配额外的View的样式
-//        open fun enableExtraView(): Boolean = false
-
+        //自定义额外item样式
         open fun onCreateExtraView(parent: ViewGroup, viewType: Int): View? = null
 
         open fun onBindExtraView(extraView: View, position: Int) {
