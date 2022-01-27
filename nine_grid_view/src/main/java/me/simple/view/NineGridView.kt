@@ -203,10 +203,13 @@ open class NineGridView @JvmOverloads constructor(
     private fun measureThreeItem(widthMeasureSpec: Int) {
         when (threeStrategy) {
             Strategy.FILL -> {
-                measureItemFill(widthMeasureSpec, 2)
+                measureItem(widthMeasureSpec, 2, 2)
             }
-            else -> {
-                measureUsualItem(widthMeasureSpec)
+            Strategy.BILI -> {
+                measureItem(widthMeasureSpec, spanCount, 2)
+            }
+            else -> {//usual
+                measureItem(widthMeasureSpec, spanCount, 1)
             }
         }
     }
