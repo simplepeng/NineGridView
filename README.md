@@ -79,8 +79,8 @@ abstract class Adapter {
     open fun onBindSingleView(singleView: View, viewType: Int, position: Int) {
 
     }
-		
-		//适配额外的View的样式
+
+    //适配额外的View的样式
     open fun onCreateExtraView(parent: ViewGroup, viewType: Int): View? = null
 
     open fun onBindExtraView(extraView: View, viewType: Int,  position: Int) {
