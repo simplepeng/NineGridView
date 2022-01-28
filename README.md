@@ -92,14 +92,14 @@ abstract class Adapter {
 可使用的属性
 
 ```xml
-app:ngv_spanCount								//横向的item数量，默认为3
-app:ngv_itemGap									//item间的间距，默认为1dp
-app:ngv_maxCount								//最多显示的item数量，默认为9
-app:ngv_single_strategy					//一个item的显示样式
+app:ngv_spanCount					//横向的item数量，默认为3
+app:ngv_itemGap						//item间的间距，默认为1dp
+app:ngv_maxCount					//最多显示的item数量，默认为9
+app:ngv_single_strategy				//一个item的显示样式
 app:ngv_two_strategy="usual"		//两个item的显示样式
-app:ngv_three_strategy					//三个item的显示样式
-app:ngv_four_strategy						//四个item的显示样式
-app:ngv_extra_strategy					//是否显示额外布局
+app:ngv_three_strategy				//三个item的显示样式
+app:ngv_four_strategy				//四个item的显示样式
+app:ngv_extra_strategy				//是否显示额外布局
 ```
 
 如果不需要自定义的ItemView，也可以直接使用本库封装好的`ImageAdapter`，效果就是预览图那种。
