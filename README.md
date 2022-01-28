@@ -71,19 +71,19 @@ abstract class Adapter {
     //默认的ItemView样式
     abstract fun onCreateItemView(parent: ViewGroup, viewType: Int): View
 
-    abstract fun onBindItemView(itemView: View, position: Int)
+    abstract fun onBindItemView(itemView: View, viewType: Int, position: Int)
 
     //适配单个ItemView的样式
     open fun onCreateSingleView(parent: ViewGroup, viewType: Int): View? = null
 
-    open fun onBindSingleView(singleView: View, position: Int) {
+    open fun onBindSingleView(singleView: View, viewType: Int, position: Int) {
 
     }
 		
 		//适配额外的View的样式
     open fun onCreateExtraView(parent: ViewGroup, viewType: Int): View? = null
 
-    open fun onBindExtraView(extraView: View, position: Int) {
+    open fun onBindExtraView(extraView: View, viewType: Int,  position: Int) {
 
     }
 }
