@@ -8,6 +8,9 @@ afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
+                groupId = 'com.github.simplepeng'
+                artifactId = 'NineGridView'
+                version = 'v1.0.2'
                 from components.release
             }
         }
