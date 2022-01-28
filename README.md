@@ -4,9 +4,8 @@
 
 * 正常九宫格视图，仿微信，Item显示样式可完全自定义
 * 超过9个Item，可自定义额外展示的布局
-* 自定义适配单个item视图显示样式
+* 自定义适配单个，两个，三个，四个item视图显示样式
 * 自定义item间的间距
-* 适配4个item时的显示样式，仿B站
 
 ## 预览
 
@@ -22,7 +21,23 @@
 | ------------------------------- | ------------------------------- |
 | ![](files/img_two_usual.png) | ![](files/img_two_fill.png) |
 
+### 三个Item
 
+| usual                        | bili                         |
+| ---------------------------- | ---------------------------- |
+| ![](files/img_three_usual.png) | ![](files/img_three_bili.png) |
+
+### 四个Item
+
+| usual                          | fill                           | bili                           |
+| ------------------------------ | ------------------------------ | ------------------------------ |
+| ![](files/img_four_usual.png) | ![](files/img_four_fill.png) | ![](files/img_four_bili.png) |
+
+### 其他
+
+| 额外布局                      | 多类型                            |
+| ----------------------------- | --------------------------------- |
+| ![](files/img_item_extra.png) | ![](files/img_item_view_type.png) |
 
 ## 依赖
 
@@ -77,9 +92,14 @@ abstract class Adapter {
 可使用的属性
 
 ```xml
-app:ngv_spanCount		//横向的item数量，默认为3
-app:ngv_itemGap			//item间的间距，默认为1dp
-app:ngv_maxCount		//最多显示的item数量，默认为9
+app:ngv_spanCount								//横向的item数量，默认为3
+app:ngv_itemGap									//item间的间距，默认为1dp
+app:ngv_maxCount								//最多显示的item数量，默认为9
+app:ngv_single_strategy					//一个item的显示样式
+app:ngv_two_strategy="usual"		//两个item的显示样式
+app:ngv_three_strategy					//三个item的显示样式
+app:ngv_four_strategy						//四个item的显示样式
+app:ngv_extra_strategy					//是否显示额外布局
 ```
 
 如果不需要自定义的ItemView，也可以直接使用本库封装好的`ImageAdapter`，效果就是预览图那种。

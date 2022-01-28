@@ -61,6 +61,6 @@
         app:ngv_single_strategy="usual"
         app:ngv_spanCount="3"
         app:ngv_three_strategy="usual"
-        app:ngv_two_strategy="fill" />
+        app:ngv_two_strategy="usual" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
