@@ -217,19 +217,19 @@ open class NineGridView @JvmOverloads constructor(
         if (adapter == null) return
         post {
             for (index in 0 until childCount) {
+                val viewType = adapter!!.getItemViewType(index)
                 val child = getChildAt(index)
-
                 if (child.layoutParams is ItemViewLayoutParams) {
                     val lp = child.layoutParams as ItemViewLayoutParams
                     when (lp.type) {
                         ItemViewLayoutParams.TYPE_ITEM_VIEW -> {
-                            adapter!!.onBindItemView(child, index)
+                            adapter!!.onBindItemView(child, viewType, index)
                         }
                         ItemViewLayoutParams.TYPE_EXTRA_VIEW -> {
-                            adapter!!.onBindExtraView(child, index)
+                            adapter!!.onBindExtraView(child, viewType, index)
                         }
                         ItemViewLayoutParams.TYPE_SINGLE_VIEW -> {
-                            adapter!!.onBindSingleView(child, index)
+                            adapter!!.onBindSingleView(child, viewType, index)
                         }
                     }
                 }
@@ -444,21 +444,42 @@ open class NineGridView @JvmOverloads constructor(
         open fun getItemViewType(position: Int) = 0
 
         //默认的ItemView样式
-        abstract fun onCreateItemView(parent: ViewGroup, viewType: Int): View
+        abstract fun onCreateItemView(
+            parent: ViewGroup,
+            viewType: Int
+        ): View
 
-        abstract fun onBindItemView(itemView: View, position: Int)
+        abstract fun onBindItemView(
+            itemView: View,
+            viewType: Int,
+            position: Int
+        )
 
         //自定义单个item样式
-        open fun onCreateSingleView(parent: ViewGroup, viewType: Int): View? = null
+        open fun onCreateSingleView(
+            parent: ViewGroup,
+            viewType: Int
+        ): View? = null
 
-        open fun onBindSingleView(singleView: View, position: Int) {
+        open fun onBindSingleView(
+            singleView: View,
+            viewType: Int,
+            position: Int
+        ) {
 
         }
 
         //自定义额外item样式
-        open fun onCreateExtraView(parent: ViewGroup, viewType: Int): View? = null
+        open fun onCreateExtraView(
+            parent: ViewGroup,
+            viewType: Int
+        ): View? = null
 
-        open fun onBindExtraView(extraView: View, position: Int) {
+        open fun onBindExtraView(
+            extraView: View,
+            viewType: Int,
+            position: Int
+        ) {
 
         }
     }

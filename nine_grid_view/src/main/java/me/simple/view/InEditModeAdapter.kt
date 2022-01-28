@@ -18,7 +18,7 @@ internal class InEditModeAdapter(
             .inflate(R.layout.ngv_item_in_edit_mode, parent, false)
     }
 
-    override fun onBindItemView(itemView: View, position: Int) {
+    override fun onBindItemView(itemView: View, viewType: Int, position: Int) {
 //        val tvItem = itemView.findViewById<TextView>(R.id.tvItem)
 //        tvItem.text = String.format("item %s", position)
     }
