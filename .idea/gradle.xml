@@ -15,7 +15,6 @@
             <option value="$PROJECT_DIR$/nine_grid_view" />
           </set>
         </option>
-        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>
