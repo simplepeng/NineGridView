@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
             holder.tvDesc.text = item.text
             holder.tvNum.text = item.images.size.toString()
 
-//            holder.nineGridView.adapter = CustomAdapter(item.images)
+            holder.nineGridView.adapter = CustomAdapter(item.images)
 
             val imageAdapter = ImageAdapter(item.images, onBindView = { imageView, item, position ->
                 Glide.with(imageView)
@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
             imageAdapter.onExtraViewClick = { position ->
                 toast("ExtraView click  $position")
             }
-            holder.nineGridView.adapter = imageAdapter
+//            holder.nineGridView.adapter = imageAdapter
         }
     }
 
@@ -181,14 +181,25 @@ class MainActivity : AppCompatActivity() {
         private val items: List<String>
     ) : NineGridView.Adapter() {
 
+        private val VIEW_TYPE_IMAGE = 1
+        private val VIEW_TYPE_VIDEO = 2
+
         override fun getItemCount() = items.size
+
+        override fun getItemViewType(position: Int): Int {
+            return if (position == 4) VIEW_TYPE_VIDEO else VIEW_TYPE_IMAGE
+        }
 
         //
         override fun onCreateItemView(parent: ViewGroup, viewType: Int): View {
-            return LayoutInflater.from(parent.context).inflate(R.layout.item_image, parent, false)
+            val layoutInflater = LayoutInflater.from(parent.context)
+            if (viewType == VIEW_TYPE_VIDEO) {
+                return layoutInflater.inflate(R.layout.item_video, parent, false)
+            }
+            return layoutInflater.inflate(R.layout.item_image, parent, false)
         }
 
-        override fun onBindItemView(itemView: View, position: Int) {
+        override fun onBindItemView(itemView: View, viewType: Int, position: Int) {
             val imageView = itemView.findViewById<ImageView>(R.id.imageView)
             Glide.with(itemView)
                 .load(items[position])
@@ -198,6 +209,11 @@ class MainActivity : AppCompatActivity() {
             itemView.setOnClickListener {
                 previewImage(items, position)
             }
+            if (viewType == VIEW_TYPE_VIDEO) {
+                itemView.findViewById<ImageView>(R.id.ivPlay)?.setOnClickListener {
+                    toast("播放视频")
+                }
+            }
         }
 
         //
@@ -205,7 +221,7 @@ class MainActivity : AppCompatActivity() {
             return LayoutInflater.from(parent.context).inflate(R.layout.item_single, parent, false)
         }
 
-        override fun onBindSingleView(singleView: View, position: Int) {
+        override fun onBindSingleView(singleView: View, viewType: Int, position: Int) {
             val imageView = singleView.findViewById<ImageView>(R.id.imageView)
             Glide.with(singleView)
                 .load(items[position])
@@ -222,7 +238,7 @@ class MainActivity : AppCompatActivity() {
             return LayoutInflater.from(parent.context).inflate(R.layout.item_extra, parent, false)
         }
 
-        override fun onBindExtraView(extraView: View, position: Int) {
+        override fun onBindExtraView(extraView: View, viewType: Int, position: Int) {
             val tvExtra = extraView.findViewById<TextView>(R.id.tvExtra)
             val extraCount = items.size - position
             tvExtra.text = String.format("+%s", extraCount)

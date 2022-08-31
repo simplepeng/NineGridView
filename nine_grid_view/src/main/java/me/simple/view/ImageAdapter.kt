@@ -18,11 +18,18 @@ open class ImageAdapter<T>(
     override fun getItemCount() = items?.size ?: 0
 
     //
-    override fun onCreateItemView(parent: ViewGroup, viewType: Int): View {
+    override fun onCreateItemView(
+        parent: ViewGroup,
+        viewType: Int
+    ): View {
         return LayoutInflater.from(parent.context).inflate(R.layout.ngv_item_image, parent, false)
     }
 
-    override fun onBindItemView(itemView: View, position: Int) {
+    override fun onBindItemView(
+        itemView: View,
+        viewType: Int,
+        position: Int
+    ) {
         if (items.isNullOrEmpty()) return
         val item = items[position] ?: return
         itemView.setOnClickListener {
@@ -32,11 +39,18 @@ open class ImageAdapter<T>(
     }
 
     //
-    override fun onCreateSingleView(parent: ViewGroup, viewType: Int): View? {
+    override fun onCreateSingleView(
+        parent: ViewGroup,
+        viewType: Int
+    ): View? {
         return LayoutInflater.from(parent.context).inflate(R.layout.ngv_item_single, parent, false)
     }
 
-    override fun onBindSingleView(singleView: View, position: Int) {
+    override fun onBindSingleView(
+        singleView: View,
+        viewType: Int,
+        position: Int
+    ) {
         if (items.isNullOrEmpty()) return
         val item = items[position] ?: return
         singleView.setOnClickListener {
@@ -46,11 +60,18 @@ open class ImageAdapter<T>(
     }
 
     //
-    override fun onCreateExtraView(parent: ViewGroup, viewType: Int): View? {
+    override fun onCreateExtraView(
+        parent: ViewGroup,
+        viewType: Int
+    ): View? {
         return LayoutInflater.from(parent.context).inflate(R.layout.ngv_item_extra, parent, false)
     }
 
-    override fun onBindExtraView(extraView: View, position: Int) {
+    override fun onBindExtraView(
+        extraView: View,
+        viewType: Int,
+        position: Int
+    ) {
         if (items.isNullOrEmpty()) return
         val tvExtra = extraView.findViewById<TextView>(R.id.tvExtra)
         val extraCount = items.size - position

@@ -4,13 +4,40 @@
 
 * 正常九宫格视图，仿微信，Item显示样式可完全自定义
 * 超过9个Item，可自定义额外展示的布局
-* 自定义适配单个item视图显示样式
+* 自定义适配单个，两个，三个，四个item视图显示样式
 * 自定义item间的间距
-* 适配4个item时的显示样式，仿B站
 
-| 默认                 | 单个视图             | 超过预设数量         | 适配4个item          |
-| -------------------- | -------------------- | -------------------- | -------------------- |
-| ![](files/img_1.jpg) | ![](files/img_2.jpg) | ![](files/img_3.jpg) | ![](files/img_4.jpg) |
+## 预览
+
+### 一个Item
+
+| usual                           | fill                            | custom                          |
+| ------------------------------- | ------------------------------- | ------------------------------- |
+| ![](files/img_single_usual.png) | ![](files/img_single_fill.png) | ![](files/img_single_custom.png) |
+
+### 两个Item
+
+| usual                           | fill                            |
+| ------------------------------- | ------------------------------- |
+| ![](files/img_two_usual.png) | ![](files/img_two_fill.png) |
+
+### 三个Item
+
+| usual                        | bili                         |
+| ---------------------------- | ---------------------------- |
+| ![](files/img_three_usual.png) | ![](files/img_three_bili.png) |
+
+### 四个Item
+
+| usual                          | fill                           | bili                           |
+| ------------------------------ | ------------------------------ | ------------------------------ |
+| ![](files/img_four_usual.png) | ![](files/img_four_fill.png) | ![](files/img_four_bili.png) |
+
+### 其他
+
+| 额外布局                      | 多类型                            |
+| ----------------------------- | --------------------------------- |
+| ![](files/img_item_extra.png) | ![](files/img_item_view_type.png) |
 
 ## 依赖
 
@@ -21,9 +48,7 @@ maven { url 'https://jitpack.io' }
 ```
 
 ```groovy
-dependencies {
-    implementation 'com.github.simplepeng:NineGridView:v1.0.1'
-}
+implementation 'com.github.simplepeng:NineGridView:v1.0.2'
 ```
 
 ## 使用
@@ -43,29 +68,22 @@ abstract class Adapter {
     //分发各种不同itemType，类似RecyclerView
     fun getItemViewType(position: Int) = 0
 
-    //适配4个itemView的样式-类似哔哩哔哩
-    open fun adaptFourItem(): Boolean = false
-
     //默认的ItemView样式
     abstract fun onCreateItemView(parent: ViewGroup, viewType: Int): View
 
-    abstract fun onBindItemView(itemView: View, position: Int)
+    abstract fun onBindItemView(itemView: View, viewType: Int, position: Int)
 
-    //是否适配单个ItemView的样式
-    open fun adaptSingleView(): Boolean = false
-
+    //适配单个ItemView的样式
     open fun onCreateSingleView(parent: ViewGroup, viewType: Int): View? = null
 
-    open fun onBindSingleView(singleView: View, position: Int) {
+    open fun onBindSingleView(singleView: View, viewType: Int, position: Int) {
 
     }
 
-    //是否适配额外的View的样式
-    open fun enableExtraView(): Boolean = false
-
+    //适配额外的View的样式
     open fun onCreateExtraView(parent: ViewGroup, viewType: Int): View? = null
 
-    open fun onBindExtraView(extraView: View, position: Int) {
+    open fun onBindExtraView(extraView: View, viewType: Int,  position: Int) {
 
     }
 }
@@ -74,9 +92,14 @@ abstract class Adapter {
 可使用的属性
 
 ```xml
-app:ngv_spanCount		//横向的item数量，默认为3
-app:ngv_itemGap			//item间的间距，默认为1dp
-app:ngv_maxCount		//最多显示的item数量，默认为9
+app:ngv_spanCount                   //横向的item数量，默认为3
+app:ngv_itemGap                     //item间的间距，默认为1dp
+app:ngv_maxCount                    //最多显示的item数量，默认为9
+app:ngv_single_strategy             //一个item的显示样式
+app:ngv_two_strategy="usual"        //两个item的显示样式
+app:ngv_three_strategy              //三个item的显示样式
+app:ngv_four_strategy               //四个item的显示样式
+app:ngv_extra_strategy              //是否显示额外布局
 ```
 
 如果不需要自定义的ItemView，也可以直接使用本库封装好的`ImageAdapter`，效果就是预览图那种。
@@ -99,6 +122,11 @@ holder.nineGridView.adapter = imageAdapter
 
 ## 版本迭代
 
+* v1.0.2:
+  * 支持更多显示类型
+  * 支持多itemViewType
+  * 抽出Adapter属性到attrs.xml
+  
 * v1.0.1：
   * 修改属性名，预防和其他View的属性冲突
   * 增加`ImageAdapter`
