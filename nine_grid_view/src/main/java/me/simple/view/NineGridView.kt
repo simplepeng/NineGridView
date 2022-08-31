@@ -256,8 +256,10 @@ open class NineGridView @JvmOverloads constructor(
             }
             else -> {
                 layoutItem(spanCount)
-                layoutExtraView()
             }
+        }
+        if (maxCount < childCount) {
+            layoutExtraView()
         }
 
         performBind()
