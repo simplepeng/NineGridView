@@ -122,6 +122,7 @@ holder.nineGridView.adapter = imageAdapter
 
 ## 版本迭代
 
+* v1.0.3：修复bug
 * v1.0.2:
   * 支持更多显示类型
   * 支持多itemViewType
