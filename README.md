@@ -48,7 +48,7 @@ maven { url 'https://jitpack.io' }
 ```
 
 ```groovy
-implementation 'com.github.simplepeng:NineGridView:v1.0.2'
+implementation 'com.github.simplepeng:NineGridView:v1.0.3'
 ```
 
 ## 使用
