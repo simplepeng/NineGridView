@@ -56,6 +56,8 @@ open class NineGridView @JvmOverloads constructor(
         const val HIDE = 1
     }
 
+    private val singleViewCache = hashMapOf<Int, View?>()
+
     init {
         if (attrs != null) {
             val typedArray = context.obtainStyledAttributes(attrs, R.styleable.NineGridView)
@@ -361,6 +363,24 @@ open class NineGridView @JvmOverloads constructor(
         }
     }
 
+    private fun getView(
+        itemViewType: Int,
+        layoutParamsType: Int
+    ): View? {
+        var itemView: View? = null
+        when (layoutParamsType) {
+            ItemViewLayoutParams.TYPE_SINGLE_VIEW -> {
+                itemView = singleViewCache[itemViewType]
+                if (itemView == null) {
+                    itemView = adapter?.onCreateSingleView(this, itemViewType)
+                }
+                singleViewCache[itemViewType] = itemView
+            }
+        }
+
+        return itemView
+    }
+
     //添加views
     private fun addViews() {
         removeAllViewsInLayout()
@@ -372,10 +392,12 @@ open class NineGridView @JvmOverloads constructor(
 
         val adapter = adapter ?: return
         val displayCount = getDisplayCount()
-        var itemViewType = adapter.getItemViewType(0)
+        var itemViewType: Int
 
         //要适配单个View的情况
-        val singleView = adapter.onCreateSingleView(this, itemViewType)
+        itemViewType = adapter.getItemViewType(0)
+//        val singleView = adapter.onCreateSingleView(this, itemViewType)
+        val singleView = getView(itemViewType, ItemViewLayoutParams.TYPE_SINGLE_VIEW)
         if (singleStrategy == Strategy.CUSTOM && singleView != null && adapter.getItemCount() == 1) {
             val singleViewLayoutParams = createSingleViewLayoutParams(singleView)
             addViewInLayout(singleView, 0, singleViewLayoutParams, true)
@@ -388,9 +410,7 @@ open class NineGridView @JvmOverloads constructor(
         for (position in 0 until displayCount) {
             itemViewType = adapter.getItemViewType(position)
             val itemView = adapter.onCreateItemView(this, itemViewType)
-            val itemViewLayoutParams = createItemViewLayoutParams(
-                ItemViewLayoutParams.TYPE_ITEM_VIEW
-            )
+            val itemViewLayoutParams = createItemViewLayoutParams(ItemViewLayoutParams.TYPE_ITEM_VIEW)
             addViewInLayout(itemView, position, itemViewLayoutParams, true)
         }
 
@@ -437,7 +457,7 @@ open class NineGridView @JvmOverloads constructor(
     internal class ItemViewLayoutParams(
         width: Int,
         height: Int
-    ) : ViewGroup.MarginLayoutParams(width, height) {
+    ) : MarginLayoutParams(width, height) {
 
         companion object {
             const val TYPE_SINGLE_VIEW = 1
