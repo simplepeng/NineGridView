@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.stfalcon.imageviewer.StfalconImageViewer
@@ -68,6 +70,7 @@ class MainActivity : AppCompatActivity() {
         binding.rvWxCircle.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = loadMoreAdapter
+//            (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
         loadMoreAdapter.setOnLoadMoreListener {
             val items = createItems()
@@ -79,6 +82,10 @@ class MainActivity : AppCompatActivity() {
         val items = createItems()
         mItems.addAll(items)
         circleAdapter.notifyDataSetChanged()
+
+        binding.btnRefresh.setOnClickListener {
+            circleAdapter.notifyDataSetChanged()
+        }
     }
 
     //造数据
@@ -155,6 +162,10 @@ class MainActivity : AppCompatActivity() {
                 toast("ExtraView click  $position")
             }
 //            holder.nineGridView.adapter = imageAdapter
+
+            holder.btnRefresh.setOnClickListener {
+                notifyItemChanged(holder.adapterPosition)
+            }
         }
     }
 
@@ -163,6 +174,7 @@ class MainActivity : AppCompatActivity() {
         val tvDesc = itemView.findViewById<TextView>(R.id.tvDesc)
         val tvNum = itemView.findViewById<TextView>(R.id.tvNum)
         val nineGridView = itemView.findViewById<NineGridView>(R.id.nineGridView)
+        val btnRefresh = itemView.findViewById<Button>(R.id.btnRefresh)
     }
 
     private fun previewImage(url: String) {
@@ -205,8 +217,8 @@ class MainActivity : AppCompatActivity() {
                 .load(items[position])
                 .centerCrop()
                 .placeholder(R.drawable.sp_loading)
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                .skipMemoryCache(true)
+//                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(imageView)
             itemView.setOnClickListener {
                 previewImage(items, position)

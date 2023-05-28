@@ -64,4 +64,13 @@
         app:ngv_three_strategy="usual"
         app:ngv_two_strategy="usual" />
 
+    <Button
+        android:id="@+id/btnRefresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="refresh"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="@id/nineGridView"
+        app:layout_constraintEnd_toEndOf="@id/nineGridView"
+        app:layout_constraintTop_toTopOf="@id/nineGridView" />
 </androidx.constraintlayout.widget.ConstraintLayout>
