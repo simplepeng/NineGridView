@@ -59,7 +59,7 @@
         app:ngv_four_strategy="usual"
         app:ngv_itemGap="2dp"
         app:ngv_maxCount="9"
-        app:ngv_single_strategy="usual"
+        app:ngv_single_strategy="custom"
         app:ngv_spanCount="3"
         app:ngv_three_strategy="usual"
         app:ngv_two_strategy="usual" />

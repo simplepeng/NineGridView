@@ -2,6 +2,7 @@ package me.simple.view
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import kotlin.math.ceil
@@ -97,15 +98,19 @@ open class NineGridView @JvmOverloads constructor(
             1 -> {
                 measureSingleItem(widthMeasureSpec, heightMeasureSpec)
             }
+
             2 -> {
                 measureTwoItem(widthMeasureSpec)
             }
+
             3 -> {
                 measureThreeItem(widthMeasureSpec)
             }
+
             4 -> {
                 measureFourItem(widthMeasureSpec)
             }
+
             else -> {
                 measureItem(widthMeasureSpec, spanCount, getLineCount())
             }
@@ -144,10 +149,12 @@ open class NineGridView @JvmOverloads constructor(
                 measureChildren(widthMeasureSpec, widthMeasureSpec)
                 width
             }
+
             Strategy.CUSTOM -> {
                 measureChildren(widthMeasureSpec, heightMeasureSpec)
                 getChildAt(0).measuredHeight
             }
+
             else -> {
                 val itemsSize = getItemSize(widthMeasureSpec, spanCount)
                 val itemMeasureSpec = MeasureSpec.makeMeasureSpec(itemsSize, MeasureSpec.EXACTLY)
@@ -164,6 +171,7 @@ open class NineGridView @JvmOverloads constructor(
             Strategy.FILL -> {
                 measureItem(widthMeasureSpec, 2, 1)
             }
+
             else -> {
                 measureItem(widthMeasureSpec, spanCount, 1)
             }
@@ -176,9 +184,11 @@ open class NineGridView @JvmOverloads constructor(
             Strategy.FILL -> {
                 measureItem(widthMeasureSpec, spanCount, 1)
             }
+
             Strategy.BILI -> {
                 measureItem(widthMeasureSpec, spanCount, 2)
             }
+
             else -> {//usual
                 measureItem(widthMeasureSpec, spanCount, 1)
             }
@@ -191,9 +201,11 @@ open class NineGridView @JvmOverloads constructor(
             Strategy.FILL -> {
                 measureItem(widthMeasureSpec, 2, 2)
             }
+
             Strategy.BILI -> {
                 measureItem(widthMeasureSpec, spanCount, 2)
             }
+
             else -> {//usual
                 measureItem(widthMeasureSpec, spanCount, getLineCount())
             }
@@ -201,6 +213,7 @@ open class NineGridView @JvmOverloads constructor(
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        Log.d("NineGridView", "changed - $changed")
         layoutChildren()
     }
 
@@ -225,9 +238,11 @@ open class NineGridView @JvmOverloads constructor(
                         ItemViewLayoutParams.TYPE_ITEM_VIEW -> {
                             adapter!!.onBindItemView(child, viewType, index)
                         }
+
                         ItemViewLayoutParams.TYPE_EXTRA_VIEW -> {
                             adapter!!.onBindExtraView(child, viewType, index)
                         }
+
                         ItemViewLayoutParams.TYPE_SINGLE_VIEW -> {
                             adapter!!.onBindSingleView(child, viewType, index)
                         }
@@ -245,15 +260,19 @@ open class NineGridView @JvmOverloads constructor(
             1 -> {
                 layoutSingleItem()
             }
+
             2 -> {
                 layoutTwoItem()
             }
+
             3 -> {
                 layoutThreeItem()
             }
+
             4 -> {
                 layoutFourItem()
             }
+
             else -> {
                 layoutItem(spanCount)
             }
@@ -262,7 +281,7 @@ open class NineGridView @JvmOverloads constructor(
             layoutExtraView()
         }
 
-        performBind()
+//        performBind()
     }
 
     //布局item
@@ -306,6 +325,7 @@ open class NineGridView @JvmOverloads constructor(
             Strategy.BILI -> {
                 layoutItem(2)
             }
+
             else -> {
                 layoutItem(spanCount)
             }
@@ -318,6 +338,7 @@ open class NineGridView @JvmOverloads constructor(
             Strategy.BILI, Strategy.FILL -> {
                 layoutItem(2)
             }
+
             else -> {
                 layoutItem(spanCount)
             }
@@ -359,6 +380,7 @@ open class NineGridView @JvmOverloads constructor(
             val singleViewLayoutParams = createSingleViewLayoutParams(singleView)
             addViewInLayout(singleView, 0, singleViewLayoutParams, true)
             requestLayout()
+            performBind()
             return
         }
 
@@ -384,6 +406,7 @@ open class NineGridView @JvmOverloads constructor(
 
         //
         requestLayout()
+        performBind()
     }
 
     //创建itemView的LayoutParams

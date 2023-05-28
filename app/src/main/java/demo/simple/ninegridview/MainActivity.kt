@@ -1,5 +1,6 @@
 package demo.simple.ninegridview
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.stfalcon.imageviewer.StfalconImageViewer
 import demo.simple.ninegridview.databinding.ActivityMainBinding
 import me.simple.loadmoreadapter.LoadMoreAdapter
@@ -18,28 +20,26 @@ import me.simple.view.ImageAdapter
 import me.simple.view.NineGridView
 import java.util.*
 
+@SuppressLint("NotifyDataSetChanged")
 class MainActivity : AppCompatActivity() {
 
     private val binding by lazy { ActivityMainBinding.inflate(this.layoutInflater) }
 
     private val mImages by lazy {
         mutableListOf(
-            "https://img2.baidu.com/it/u=111010057,1963484761&fm=26&fmt=auto",
-            "https://img0.baidu.com/it/u=680204813,2408273793&fm=26&fmt=auto",
-            "https://img0.baidu.com/it/u=4198545283,538361922&fm=26&fmt=auto",
-            "https://img2.baidu.com/it/u=1042301913,584297321&fm=26&fmt=auto",
-            "https://img0.baidu.com/it/u=3329176626,3830333762&fm=26&fmt=auto",
-            "https://img1.baidu.com/it/u=2199515026,1341231739&fm=26&fmt=auto",
-            "https://img2.baidu.com/it/u=1094955877,138168367&fm=26&fmt=auto",
+            "https://img2.baidu.com/it/u=3241450202,4190299177&fm=253&fmt=auto",
             "https://img2.baidu.com/it/u=4162224702,2932016509&fm=253&fmt=auto",
             "https://img2.baidu.com/it/u=1273165577,938991422&fm=253&fmt=auto",
             "https://img0.baidu.com/it/u=1528947100,1813241635&fm=253&fmt=auto",
             "https://img0.baidu.com/it/u=613366496,3047981989&fm=253&fmt=auto",
-            "https://img1.baidu.com/it/u=2665794537,3782072232&fm=26&fmt=auto",
             "https://img2.baidu.com/it/u=1502110763,2971686696&fm=253&fmt=auto",
             "https://img1.baidu.com/it/u=2270371530,4039976270&fm=253&fmt=auto",
             "https://img1.baidu.com/it/u=3895358213,633254202&fm=253&fmt=auto&",
             "https://img2.baidu.com/it/u=4042351128,2955686081&fm=253&fmt=auto",
+            "https://img1.baidu.com/it/u=1982594777,2345248510&fm=253&fmt=auto",
+            "https://img0.baidu.com/it/u=1825304346,2860164199&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=666",
+            "https://img1.baidu.com/it/u=1577990120,2190804262&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500",
+            "https://img2.baidu.com/it/u=3635999126,629399836&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=586",
         )
     }
 
@@ -205,6 +205,8 @@ class MainActivity : AppCompatActivity() {
                 .load(items[position])
                 .centerCrop()
                 .placeholder(R.drawable.sp_loading)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(imageView)
             itemView.setOnClickListener {
                 previewImage(items, position)
