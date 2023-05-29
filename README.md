@@ -48,8 +48,10 @@ maven { url 'https://jitpack.io' }
 ```
 
 ```groovy
-implementation 'com.github.simplepeng:NineGridView:v1.0.3'
+implementation 'com.github.simplepeng:NineGridView:1.0.4'
 ```
+
+从`1.0.4`版本开始，版本号前面不用加`v`
 
 ## 使用
 
@@ -122,6 +124,7 @@ holder.nineGridView.adapter = imageAdapter
 
 ## 版本迭代
 
+* 1.0.4：修复递归调用`performBind`的问题，增加`viewCache`
 * v1.0.3：修复bug
 * v1.0.2:
   * 支持更多显示类型

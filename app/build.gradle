@@ -50,6 +50,6 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     implementation 'com.github.stfalcon-studio:StfalconImageViewer:v1.0.1'
     //
-    implementation project(path: ':nine_grid_view')
-//    implementation 'com.github.simplepeng:NineGridView:v1.0.3'
+//    implementation project(path: ':nine_grid_view')
+    implementation 'com.github.simplepeng:NineGridView:1.0.4'
 }
