@@ -2,6 +2,7 @@ package demo.simple.ninegridview
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -84,6 +85,13 @@ class MainActivity : AppCompatActivity() {
         circleAdapter.notifyDataSetChanged()
 
         binding.btnRefresh.setOnClickListener {
+            val newItems = createItems()
+
+//            mItems.addAll(0, newItems)
+//            circleAdapter.notifyItemRangeInserted(0, newItems.size)
+
+            mItems.clear()
+            mItems.addAll(newItems)
             circleAdapter.notifyDataSetChanged()
         }
     }
@@ -106,15 +114,17 @@ class MainActivity : AppCompatActivity() {
         return imageCount
     }
 
+    var imageIndex = 0
+
     private fun createImages(): List<String> {
         val images = mutableListOf<String>()
-//        var randomCount = Random().nextInt(mImages.size)
-//        val randomCount = 1
         val randomCount = createImageCount()
         for (i in 0 until randomCount) {
-            val index = Random().nextInt(mImages.size)
-            images.add(mImages[index])
+            imageIndex = Random().nextInt(mImages.size)
+            images.add(mImages[imageIndex])
+            imageIndex++
         }
+        imageIndex = 0
         return images
     }
 
@@ -164,6 +174,7 @@ class MainActivity : AppCompatActivity() {
 //            holder.nineGridView.adapter = imageAdapter
 
             holder.btnRefresh.setOnClickListener {
+                Log.d("NineGridView", "position - ${holder.adapterPosition}")
                 notifyItemChanged(holder.adapterPosition)
             }
         }
@@ -204,6 +215,7 @@ class MainActivity : AppCompatActivity() {
 
         //
         override fun onCreateItemView(parent: ViewGroup, viewType: Int): View {
+            Log.d("NineGridView", "onCreateItemView")
             val layoutInflater = LayoutInflater.from(parent.context)
             if (viewType == VIEW_TYPE_VIDEO) {
                 return layoutInflater.inflate(R.layout.item_video, parent, false)

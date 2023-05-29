@@ -57,6 +57,8 @@ open class NineGridView @JvmOverloads constructor(
     }
 
     private val singleViewCache = hashMapOf<Int, View?>()
+    private val itemViewCache = hashMapOf<Int, HashMap<Int, View?>?>()
+    private val extraViewCache = hashMapOf<Int, View?>()
 
     init {
         if (attrs != null) {
@@ -215,7 +217,7 @@ open class NineGridView @JvmOverloads constructor(
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        Log.d("NineGridView", "changed - $changed")
+//        Log.d("NineGridView", "changed - $changed")
         layoutChildren()
     }
 
@@ -376,13 +378,40 @@ open class NineGridView @JvmOverloads constructor(
                 }
                 singleViewCache[itemViewType] = itemView
             }
+
+            ItemViewLayoutParams.TYPE_EXTRA_VIEW -> {
+                itemView = extraViewCache[itemViewType]
+                if (itemView == null) {
+                    itemView = adapter?.onCreateExtraView(this, itemViewType)
+                }
+                extraViewCache[itemViewType] = itemView
+            }
         }
 
         return itemView
     }
 
+    private fun getItemView(
+        position: Int,
+        itemViewType: Int
+    ): View {
+        if (!itemViewCache.containsKey(position)) {
+            itemViewCache[position] = hashMapOf()
+        }
+        val viewMap = itemViewCache[position]!!
+        var itemView: View? = null
+        if (!viewMap.containsKey(itemViewType)) {
+            itemView = adapter!!.onCreateItemView(this, itemViewType)
+            viewMap[itemViewType] = itemView
+        } else {
+            itemView = viewMap[itemViewType]
+        }
+        return itemView!!
+    }
+
     //添加views
     private fun addViews() {
+//        Log.d("NineGridView", "childCount - $childCount")
         removeAllViewsInLayout()
 
         if (adapter == null || adapter!!.getItemCount() == 0) {
@@ -409,7 +438,7 @@ open class NineGridView @JvmOverloads constructor(
         //默认itemView的情况
         for (position in 0 until displayCount) {
             itemViewType = adapter.getItemViewType(position)
-            val itemView = adapter.onCreateItemView(this, itemViewType)
+            val itemView = getItemView(position, itemViewType)
             val itemViewLayoutParams = createItemViewLayoutParams(ItemViewLayoutParams.TYPE_ITEM_VIEW)
             addViewInLayout(itemView, position, itemViewLayoutParams, true)
         }
@@ -417,7 +446,7 @@ open class NineGridView @JvmOverloads constructor(
         //添加额外的itemView
         if (adapter.getItemCount() > maxCount) {
             itemViewType = adapter.getItemViewType(displayCount)
-            val extraView = adapter.onCreateExtraView(this, itemViewType)
+            val extraView = getView(itemViewType, ItemViewLayoutParams.TYPE_EXTRA_VIEW)
             if (extraStrategy == Strategy.SHOW && extraView != null) {
                 val layoutParams = createItemViewLayoutParams(ItemViewLayoutParams.TYPE_EXTRA_VIEW)
                 addViewInLayout(extraView, displayCount, layoutParams, true)
@@ -427,6 +456,7 @@ open class NineGridView @JvmOverloads constructor(
         //
         requestLayout()
         performBind()
+//        Log.d("NineGridView", "end childCount - $childCount")
     }
 
     //创建itemView的LayoutParams

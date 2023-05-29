@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="11" />
+    <bytecodeTargetLevel target="11">
+      <module name="android.NineGridView.app" target="17" />
+      <module name="NineGridView.nine_grid_view" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>
