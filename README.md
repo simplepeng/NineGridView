@@ -122,6 +122,15 @@ imageAdapter.onExtraViewClick = { position ->
 holder.nineGridView.adapter = imageAdapter
 ```
 
+## 感谢各位大佬打赏🙇🙇🙇！
+
+您的支持是作者努力更新的动力。万水千山总是情，10.24我看行！
+
+| ![](https://raw.githubusercontent.com/simplepeng/merge_pay_code/refs/heads/master/qrcode_alipay.jpg) | ![](https://raw.githubusercontent.com/simplepeng/merge_pay_code/refs/heads/master/qrcode_wxpay.png) | ![](https://raw.githubusercontent.com/simplepeng/merge_pay_code/refs/heads/master/qrcode_qqpay.png) |
+| ------------------------------------------------------------ | ----- | ----- |
+
+[打赏链接](https://simplepeng.com/merge_pay_code/) | [赞助列表](https://simplepeng.com/Sponsor/)
+
 ## 版本迭代
 
 * 1.0.4：修复递归调用`performBind`的问题，增加`viewCache`
@@ -129,8 +138,7 @@ holder.nineGridView.adapter = imageAdapter
 * v1.0.2:
   * 支持更多显示类型
   * 支持多itemViewType
-  * 抽出Adapter属性到attrs.xml
-  
+  * 抽出Adapter属性到attrs.xml 
 * v1.0.1：
   * 修改属性名，预防和其他View的属性冲突
   * 增加`ImageAdapter`
